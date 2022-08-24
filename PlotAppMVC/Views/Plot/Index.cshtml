@@ -1,0 +1,113 @@
+﻿@model Models.Entities.PlotModel;
+@{
+    ViewData["Title"] = "Home Page";
+    var message = ViewData["Message"] as string;
+}
+<script>
+
+window.onload = async function() {
+    initialize();
+}
+
+
+async function getData() {
+    plotsData = await fetch("/plots").then(response => response.json()).then(data => { 
+        data.forEach(r => {
+        console.log(r);
+            const d = document.createElement("div");
+            d.classList.add("plotListItemStyle");
+            d.addEventListener("click", goToPopUp(r.longitude, r.latitude));
+        d.innerHTML = `<div>${r.city}</div><div>${r.plotNumber}</div><div>${r.area} ha</div>`;
+        document.querySelector(".userPlots").appendChild(d);
+        })
+    }).catch(error => console.error("Unable to get items.", error));
+}
+
+function goToPopUp(longitude, latitude) {
+    map.setView([longitude, latitude], 18);
+}
+
+async function initialize() {
+    map = L.map('map').setView([50.041187, 21.999121], 18);
+
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+}
+
+function addPopUps(plots) {
+    for (let i = 0; i < plots.length; i++) {
+        var marker = L.marker([plots[i].longitude, plots[i].latitude]).addTo(map);
+        marker.bindPopup(`${plots[i].city} ${plots[i].plotNumber} ${plots[i].area}ha`);
+    }
+}
+
+</script>
+
+<section class="d-flex justify-content-center align-items-md-start">
+    @if (User?.Identity?.IsAuthenticated??false)
+ {
+     <div style="width: 100%;">
+	<nav class="flex-column">
+		<div class="nav-item px-3">
+			<div class="d-flex flex-column gap-2">
+				<form method="post" action="/plot">
+
+				<div class="form-group">
+					<label for="city" class="text-white">Miejscowość</label>
+					<input type="text" class="form-control" id="city" placeholder="Kraczkowa" name="City">
+				</div>
+				<div class="form-group">
+					<label for="plotNumber" class="text-white">Numer działki</label>
+					<input type="text" class="form-control" id="plotNumber" placeholder="3374/16" name="PlotNumber">
+				</div>
+				<div class="form-group">
+					<label for="area" class="text-white">Powierzchnia (ha)</label>
+					<input type="text" class="form-control" id="area" placeholder="0.55" name="Area">
+				</div>
+				<button type="submit" class="btn btn-primary my-2 align-self-center" >Dodaj działkę</button>
+				</form>
+			</div>
+		</div>
+	</nav>
+<div class="userPlots">
+
+</div>
+</div>
+}
+<div class="text-center">
+    Welcome to your new app.
+    <div id="map"></div>
+</div>
+ </section>
+
+ @if (User?.Identity?.IsAuthenticated??false)
+ {
+          <script type="text/javascript">
+
+        let plotsData;
+        getData();
+
+     </script>
+ }
+
+
+
+<style>
+    .plotListItemStyle{
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
+        padding: 5px;
+        margin: 10px;
+        border: 1px solid black;
+        cursor: pointer;
+    }
+    #map{
+        width: 70vw;
+        height: 80vh;
+    }
+</style>

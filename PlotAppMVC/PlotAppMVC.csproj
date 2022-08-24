@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="Views\Account\Login.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\MyPlotApp\MyPlot\DataAccess\DataAccess.csproj" />
+    <ProjectReference Include="..\Services\Services.csproj" />
+	  <PackageReference Include="AspNetCore.Identity.MongoDbCore" Version="3.1.2" />
+	  <PackageReference Include="Microsoft.AspNet.Identity.Core" Version="2.2.3" />
+	  <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="6.0.8" />
+	  <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
+
+  </ItemGroup>
+
+</Project>
