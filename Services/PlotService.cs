@@ -63,7 +63,7 @@ namespace Services
             _cache.Remove(CacheName);
         }
 
-        public async Task CreatePlot(PlotModel plot, ObjectId userId)
+        public async Task CreatePlot(PlotModel plot, string userId)
         {
             var client = _db.Client;
 
@@ -77,10 +77,10 @@ namespace Services
                 var plotInTransaction = db.GetCollection<PlotModel>(_db.PlotCollectionName);
                 await plotInTransaction.InsertOneAsync(plot);
 
-                //var usersInTransaction = db.GetCollection<UserModel>(_db.UserCollectionName);
-                //var user = await _userData.GetUser(userId);
-                //user.PlotsIds.Add(plot.Id);
-                //await usersInTransaction.ReplaceOneAsync(u => u.Id == user.Id, user);
+                var usersInTransaction = db.GetCollection<UserModel>(_db.UserCollectionName);
+                var user = await _user.FindByIdAsync(userId);
+                user.PlotsIds.Add(plot.Id);
+                await usersInTransaction.ReplaceOneAsync(u => u.Id == user.Id, user);
 
                 await session.CommitTransactionAsync();
             }

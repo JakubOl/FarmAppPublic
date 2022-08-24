@@ -53,13 +53,9 @@ namespace PlotAppMVC.Controllers
 
             var userId = User.Identity.GetUserId();
 
-            await _plotService.CreatePlot(model, ObjectId(userId));
+            await _plotService.CreatePlot(model, userId);
 
-            var plots = await _plotService.GetAllPlots();
-
-            await _js.InvokeVoidAsync("addPopUps", plots);
-
-            return View("Index");
+            return Redirect("/");
         }
 
     }
