@@ -33,8 +33,10 @@ namespace PlotAppMVC.Controllers
         [HttpGet("/plots")]
         public async Task<List<PlotModel>> GetUserPlots()
         {
-            var plots = await _plotService.GetAllPlots();
+            var userId = User.Identity.GetUserId();
+            var plots = await _plotService.GetUsersPlots(userId);
 
+            if (plots is null) return null;
             return plots;
         }
 
@@ -58,5 +60,13 @@ namespace PlotAppMVC.Controllers
             return Redirect("/");
         }
 
+        [HttpPost("/plot/{id}")]
+        public async Task<ActionResult> DeletePlot([FromRoute]string id)
+        {
+            var userId = User.Identity.GetUserId();
+
+            await _plotService.DeletePlot(id, userId);
+            return Redirect("/");
+        }
     }
 }

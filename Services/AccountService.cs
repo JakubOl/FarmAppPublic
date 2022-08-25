@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Models.Entities;
 
 namespace Services
 {
@@ -20,6 +21,7 @@ namespace Services
         {
             var newUser = new UserModel()
             {
+                UserName = dto.EmailAddress,
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 Email = dto.EmailAddress,

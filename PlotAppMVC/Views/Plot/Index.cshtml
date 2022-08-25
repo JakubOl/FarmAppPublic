@@ -2,9 +2,12 @@
 @{
     ViewData["Title"] = "Home Page";
     var message = ViewData["Message"] as string;
+    var plots = ViewData["plots"] as List<PlotModel>;
 }
 <script>
-var map;
+let map;
+let plots;
+
 window.onload = async function() {
     initialize();
 }
@@ -14,8 +17,7 @@ function goToPopUp(longitude, latitude) {
 }
 
 async function initialize() {
-    map = L.map('map').setView([50.041187, 21.999121], 18);
-
+    map = new L.map('map').setView([50.041187, 21.999121], 18);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
@@ -23,17 +25,48 @@ async function initialize() {
     }).addTo(map);
 }
 
+async function getPlots(){
+    let plotsArea = 0;
 
+    plots = await fetch("/plots").then(response => response.json()).then(data => { 
+        data.forEach(plot => {
+            var marker = new L.marker([plot.longitude, plot.latitude]).bindPopup(`${plot.city} ${plot.plotNumber} ${plot.area}ha`).addTo(map);
+
+            const plotArea = parseFloat(plot.area);
+            if(plotArea !== NaN){
+                plotsArea += plotArea; 
+            };
+
+            const d = document.createElement("div");
+            d.classList.add("plotListItemStyle");
+            d.addEventListener("click", (() => goToPopUp(plot.longitude, plot.latitude)));
+        d.innerHTML = `<form class="d-flex; justify-content-between" method="post" action="/plot/${plot.id}"><div>${plot.city}</div>
+         
+        <div>${plot.plotNumber}</div><div>${plot.area} ha</div><button type="submit" class="btn-sm btn-danger">Delete</button></form><a href="/plot/edit/${plot.id}"></a>`;
+        document.querySelector(".userPlots").appendChild(d);
+            goToPopUp(plot.longitude, plot.latitude);
+        })
+    }).catch(error => console.error("Unable to get items.", error));
+
+document.querySelector(".plotsArea").textContent = plotsArea;
+}
+function showForm() {
+    document.querySelector(".plotForm").classList.toggle("hidden");
+}
 </script>
 
 
 <section class="d-flex justify-content-center align-items-md-start">
     @if (User?.Identity?.IsAuthenticated??false)
  {
+
      <div style="width: 100%;">
-	<nav class="flex-column">
+                <button class="btn btn-outline-primary showFormButton" onclick="showForm">Add plot</button>
+
+	<nav class="flex-column plotForm hidden">
 		<div class="nav-item px-3">
 			<div class="d-flex flex-column gap-2">
+
 				<form method="post" action="/plot">
 
 				<div class="form-group">
@@ -56,6 +89,9 @@ async function initialize() {
 <div class="userPlots">
 
 </div>
+<div>
+    <div >Area <span class="plotsArea"></span> ha</div>
+</div>
 </div>
 }
 <div class="text-center">
@@ -64,40 +100,32 @@ async function initialize() {
 </div>
  </section>
 
- @if (User?.Identity?.IsAuthenticated??false)
+ @if (User?.Identity?.IsAuthenticated == true)
  {
      <script type="text/javascript">
-
-         fetch("/plots").then(response => response.json()).then(data => { 
-             console.log(data);
-        data.forEach(r => {
-            var marker = new L.marker([r.longitude, r.latitude]).bindPopup(`${r.city} ${r.plotNumber} ${r.area}ha`).addTo(map);
-
-            const d = document.createElement("div");
-            d.classList.add("plotListItemStyle");
-            d.addEventListener("click", goToPopUp(r.longitude, r.latitude));
-        d.innerHTML = `<div>${r.city}</div><div>${r.plotNumber}</div><div>${r.area} ha</div>`;
-        document.querySelector(".userPlots").appendChild(d);
-        })
-    }).catch(error => console.error("Unable to get items.", error));
+        setTimeout(() => { getPlots(); }, 1000);
+        document.querySelector(".showFormButton").addEventListener("click", showForm);
      </script>
  }
 
  
 
 <style>
-    .plotListItemStyle{
+    .plotListItemStyle form{
         display: flex;
         gap: 10px;
         align-items: center;
         justify-content: center;
+        margin: 5px;
         padding: 5px;
-        margin: 10px;
         border: 1px solid black;
         cursor: pointer;
     }
     #map{
         width: 70vw;
         height: 80vh;
+    }
+    .hidden{
+        display:none;
     }
 </style>

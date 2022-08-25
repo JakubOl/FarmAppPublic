@@ -34,20 +34,20 @@ namespace Services
 
         public async Task<List<PlotModel>> GetUsersPlots(string userId)
         {
-            //var output = _cache.Get<List<PlotModel>>(userId);
-            //if (output is null)
-            //{
-            //    //var userPlotsIds = _user.Users.FirstOrDefault(u => userId)?.PlotsIds;
-            //    if (userPlotsIds is null) return null;
-            //    var plots = await GetAllPlots();
-            //    var userPlots = plots.ToList().Where(p => userPlotsIds.Contains(p.Id.ToString()));
-            //    output = plots.ToList();
+            var output = _cache.Get<List<PlotModel>>(userId);
+            if (output is null)
+            {
+                var user = await _user.FindByIdAsync(userId);
+                var userPlotsId = user.PlotsIds;
+                if (userPlotsId is null) return null;
+                var plots = await GetAllPlots();
+                var userPlots = plots.Where(p => userPlotsId.Contains(p.Id.ToString()));
+                output = userPlots.ToList();
 
-            //    _cache.Set(userId, output, TimeSpan.FromMinutes(1));
-            //}
+                _cache.Set(userId, output, TimeSpan.FromMinutes(1));
+            }
 
-            //return output;
-            throw new NotImplementedException();
+            return output;
         }
 
         public async Task<PlotModel> GetPlot(string id)
@@ -67,6 +67,10 @@ namespace Services
         {
             var client = _db.Client;
 
+            _cache.Remove(userId);
+
+            plot.Area = plot.Area.Replace(",", ".");
+
             using var session = await client.StartSessionAsync();
 
             session.StartTransaction();
@@ -79,8 +83,21 @@ namespace Services
 
                 var usersInTransaction = db.GetCollection<UserModel>(_db.UserCollectionName);
                 var user = await _user.FindByIdAsync(userId);
-                user.PlotsIds.Add(plot.Id);
+
+                if (user.PlotsIds is null)
+                {
+                    user.PlotsIds = new List<string>()
+                    {
+                        plot.Id
+                    };
+                }
+                else
+                {
+                    user.PlotsIds.Add(plot.Id);
+                }
+
                 await usersInTransaction.ReplaceOneAsync(u => u.Id == user.Id, user);
+
 
                 await session.CommitTransactionAsync();
             }
@@ -93,31 +110,32 @@ namespace Services
 
         public async Task DeletePlot(string plotId, string userId)
         {
-            //var client = _db.Client;
+            var client = _db.Client;
 
-            //using var session = await client.StartSessionAsync();
+            _cache.Remove(userId);
 
-            //session.StartTransaction();
+            using var session = await client.StartSessionAsync();
 
-            //try
-            //{
-            //    var db = client.GetDatabase(_db.DbName);
-            //    var plotInTransaction = db.GetCollection<PlotModel>(_db.PlotCollectionName);
-            //    await plotInTransaction.DeleteOneAsync(p => p.Id == plotId);
+            session.StartTransaction();
 
-            //    var usersInTransaction = db.GetCollection<UserModel>(_db.UserCollectionName);
-            //    var user = _user.Users.FirstOrDefault(u => u.UserId == userId);
-            //    if (user == null) return;
-            //    await usersInTransaction.ReplaceOneAsync(u => u.Id == user.Id, user);
+            try
+            {
+                var db = client.GetDatabase(_db.DbName);
+                var plotInTransaction = db.GetCollection<PlotModel>(_db.PlotCollectionName);
+                await plotInTransaction.DeleteOneAsync(plot => plot.Id == plotId);
 
-            //    await session.CommitTransactionAsync();
-            //}
-            //catch (Exception ex)
-            //{
-            //    await session.AbortTransactionAsync();
-            //    throw;
-            //}
-            throw new NotImplementedException();
+                var usersInTransaction = db.GetCollection<UserModel>(_db.UserCollectionName);
+                var user = await _user.FindByIdAsync(userId);
+                user.PlotsIds.Remove(plotId);
+                await usersInTransaction.ReplaceOneAsync(u => u.Id == user.Id, user);
+
+                await session.CommitTransactionAsync();
+            }
+            catch (Exception ex)
+            {
+                await session.AbortTransactionAsync();
+                throw;
+            }
         }
     }
 }

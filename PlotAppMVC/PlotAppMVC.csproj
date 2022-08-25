@@ -11,7 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\MyPlotApp\MyPlot\DataAccess\DataAccess.csproj" />
+    <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
+    <ProjectReference Include="..\Models\Models.csproj" />
     <ProjectReference Include="..\Services\Services.csproj" />
 	  <PackageReference Include="AspNetCore.Identity.MongoDbCore" Version="3.1.2" />
 	  <PackageReference Include="Microsoft.AspNet.Identity.Core" Version="2.2.3" />
