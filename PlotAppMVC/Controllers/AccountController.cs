@@ -73,12 +73,14 @@ namespace PlotAppMVC.Controllers
         }
 
         [HttpGet("role")]
+        [Authorize(Roles = "Admin")]
         public ActionResult Role()
         {
             return View();
         }
 
         [HttpPost("role")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Role(RoleDto dto)
         {
             if (!ModelState.IsValid)
