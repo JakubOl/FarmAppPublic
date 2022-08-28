@@ -31,12 +31,12 @@ namespace PlotAppMVC.Controllers
         }
 
         [HttpGet("/plots")]
-        public async Task<List<PlotModel>> GetUserPlots()
+        public async Task<List<PlotModel>> GetUserPlots([FromQuery] string searchText)
         {
             var userId = User.Identity.GetUserId();
-            var plots = await _plotService.GetUsersPlots(userId);
+            var plots = await _plotService.GetUsersPlots(userId, searchText);
 
-            if (plots is null) return null;
+            if (plots is null) return new List<PlotModel>();
             return plots;
         }
 
@@ -50,6 +50,10 @@ namespace PlotAppMVC.Controllers
 
             var plotCoordinates = await PlotProcessor.LoadPlot(model.City, model.PlotNumber);
 
+            if(plotCoordinates is null) {
+                ViewData["message"] = "Plot not found";
+                return View("Index", model);
+            }
             model.Latitude = plotCoordinates[0];
             model.Longitude = plotCoordinates[1];
 

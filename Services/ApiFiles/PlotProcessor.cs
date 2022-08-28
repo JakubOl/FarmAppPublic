@@ -16,6 +16,8 @@ namespace Services.ApiFiles
 
                 List<JObject> resultList = await Client.GetAsync(url).Result.Content.ReadAsAsync<List<JObject>>();
 
+                if (resultList is null) return null;
+
                 var firstResult = resultList[0];
 
                 var longitude = (decimal)firstResult["point"]["coordinates"][0];

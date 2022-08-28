@@ -25,79 +25,136 @@ async function initialize() {
     }).addTo(map);
 }
 
-async function getPlots(){
-    let plotsArea = 0;
+async function getPlots(searchText){
+    if(!searchText){
+        searchText = "";
+    }
+    console.log(searchText);
+    plots = await fetch(`/plots?searchText=${searchText}`).then(response => response.json()).then(data => { 
+        let areaSum = 0;
+        const plotTable = document.querySelector(".userPlots");
+        plotTable.innerHTML = "";
 
-    plots = await fetch("/plots").then(response => response.json()).then(data => { 
-        data.forEach(plot => {
-            var marker = new L.marker([plot.longitude, plot.latitude]).bindPopup(`${plot.city} ${plot.plotNumber} ${plot.area}ha`).addTo(map);
+        data.forEach(function(plot, idx) {
+            // Create marker
+            var marker = new L.marker([plot.longitude, plot.latitude])
+            .bindPopup(`${plot.city} ${plot.plotNumber} ${plot.area}ha`).addTo(map);
 
             const plotArea = parseFloat(plot.area);
             if(plotArea !== NaN){
-                plotsArea += plotArea; 
+                  areaSum += plotArea;
             };
 
-            const d = document.createElement("div");
-            d.classList.add("plotListItemStyle");
-            d.addEventListener("click", (() => goToPopUp(plot.longitude, plot.latitude)));
-        d.innerHTML = `<form class="d-flex; justify-content-between" method="post" action="/plot/${plot.id}"><div>${plot.city}</div>
-         
-        <div>${plot.plotNumber}</div><div>${plot.area} ha</div><button type="submit" class="btn-sm btn-danger">Delete</button></form><a href="/plot/edit/${plot.id}"></a>`;
-        document.querySelector(".userPlots").appendChild(d);
+            // Create table row with plot
+            const plotRow = document.createElement("tr");
+            plotRow.classList.add("plotListItemStyle");
+            plotRow.addEventListener("click", (() => goToPopUp(plot.longitude, plot.latitude)));
+            plotRow.innerHTML = `
+              <th class="align-middle" scope="row">${idx + 1}</th>
+              <td class="align-middle">${plot.city}</td>
+              <td class="align-middle">${plot.plotNumber}</td>
+              <td class="align-middle">${plot.area}</td>
+              <td class="align-middle">${plot.tillage}</td>
+              <td class="align-middle">
+                <form class="d-flex" method="post" action="/plot/${plot.id}">
+                    <a class="btn btn-sm btn-primary mx-1" href="/plot/edit/${plot.id}"><b>Edit</b></a>
+                    <button type="submit" class="btn btn-sm btn-danger"><b>Delete</b></button>
+                </form>
+              </td>
+            `;
+            plotTable.appendChild(plotRow);
+
+
             goToPopUp(plot.longitude, plot.latitude);
         })
-    }).catch(error => console.error("Unable to get items.", error));
 
-document.querySelector(".plotsArea").textContent = plotsArea;
+        // Create summary table row
+        areaSum = areaSum.toFixed(3);
+        const summaryRow = document.createElement("tr");
+            summaryRow.innerHTML = `
+              <th scope="row" colspan="2">Summary: </th>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td class="text-right">${areaSum} ha</td>
+            `;
+            plotTable.appendChild(summaryRow);
+
+    })
+    .catch(error => console.error("Unable to get items.", error));
 }
 function showForm() {
     document.querySelector(".plotForm").classList.toggle("hidden");
 }
+
 </script>
 
 
-<section class="d-flex justify-content-center align-items-md-start">
+<section class="d-flex justify-content-center align-items-md-start m-2 gap-5">
+    @if(message is not null){
+        <div>@message</div>
+    }
     @if (User?.Identity?.IsAuthenticated??false)
  {
 
-     <div style="width: 100%;">
-                <button class="btn btn-outline-primary showFormButton" onclick="showForm">Add plot</button>
+     <div style="">
 
 	<nav class="flex-column plotForm hidden">
-		<div class="nav-item px-3">
-			<div class="d-flex flex-column gap-2">
+		<div class="nav-item">
+			<div >
 
-				<form method="post" action="/plot">
+				<form class="" method="post" action="/plot">
 
 				<div class="form-group">
-					<label for="city" class="text-white">Miejscowość</label>
+					<label for="city" class="text-black">Miejscowość</label>
 					<input type="text" class="form-control" id="city" placeholder="Kraczkowa" name="City">
 				</div>
 				<div class="form-group">
-					<label for="plotNumber" class="text-white">Numer działki</label>
+					<label for="plotNumber" class="text-black">Numer działki</label>
 					<input type="text" class="form-control" id="plotNumber" placeholder="3374/16" name="PlotNumber">
 				</div>
 				<div class="form-group">
-					<label for="area" class="text-white">Powierzchnia (ha)</label>
+					<label for="area" class="text-black">Powierzchnia (ha)</label>
 					<input type="text" class="form-control" id="area" placeholder="0.55" name="Area">
+				</div>
+                <div class="form-group">
+					<label for="area" class="text-black">Uprawa</label>
+					<input type="text" class="form-control" id="tillage" placeholder="Pszenica" name="tillage">
 				</div>
 				<button type="submit" class="btn btn-primary my-2 align-self-center w-100" >Dodaj działkę</button>
 				</form>
 			</div>
 		</div>
 	</nav>
-<div class="userPlots">
-
-</div>
-<div>
-    <div >Area <span class="plotsArea"></span> ha</div>
-</div>
+    <form class="form-inline d-flex">
+    <input id="searchText" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+    <button type="submit" id="searchButton" class="btn btn-outline-success my-2 my-sm-0">Search</button>
+  </form>
+<table class="table table-hover table-dark">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Miejscowość</th>
+      <th scope="col">Numer</th>
+      <th scope="col">Powierzchnia</th>
+      <th scope="col">Uprawa</th>
+      <th scope="col">
+                <a class="btn btn-secondary showFormButton px-1 py-0" onclick="showForm">Dodaj działkę</a>
+      </th>
+    </tr>
+  </thead>
+  <tbody class="userPlots">
+  </tbody>
+</table>
 </div>
 }
 <div class="text-center">
-    Welcome to your new app.
     <div id="map"></div>
 </div>
+ @if (User?.Identity?.IsAuthenticated == false)
+ {
+     <h1>Aby rozpocząć zarządzanie swoimi działkami <a href="/login">zaloguj</a> lub <a href="/register">zarejestruj</a> się!</h1>
+ }
  </section>
 
  @if (User?.Identity?.IsAuthenticated == true)
@@ -111,21 +168,21 @@ function showForm() {
  
 
 <style>
-    .plotListItemStyle form{
-        display: flex;
-        gap: 10px;
-        align-items: center;
-        justify-content: center;
-        margin: 5px;
-        padding: 5px;
-        border: 1px solid black;
-        cursor: pointer;
-    }
     #map{
-        width: 70vw;
-        height: 80vh;
+        width: 800px;
+        height: 800px;
     }
     .hidden{
         display:none;
     }
+    td, th{
+        text-align: center;
+        cursor: pointer;
+    }
+
 </style>
+
+    <script>
+document.querySelector("#searchButton").addEventListener("click", (() => getPlots(document.getElementById("searchText").value)));
+
+    </script>

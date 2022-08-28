@@ -16,6 +16,7 @@ namespace Models.Entities
 		public string Area { get; set; }
 		public decimal Latitude { get; set; }
 		public decimal Longitude { get; set; }
+		public string Tillage { get; set; }
 		public int TillageId { get; set; }
 		public virtual TillageModel TillageType { get; set; }
 		public List<WorkModel> Works { get; set; }

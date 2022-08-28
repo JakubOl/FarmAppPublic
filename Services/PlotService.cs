@@ -32,7 +32,7 @@ namespace Services
             return output;
         }
 
-        public async Task<List<PlotModel>> GetUsersPlots(string userId)
+        public async Task<List<PlotModel>> GetUsersPlots(string userId, string searchText)
         {
             var output = _cache.Get<List<PlotModel>>(userId);
             if (output is null)
@@ -45,6 +45,14 @@ namespace Services
                 output = userPlots.ToList();
 
                 _cache.Set(userId, output, TimeSpan.FromMinutes(1));
+            }
+            if (!string.IsNullOrWhiteSpace(searchText))
+            {
+                output = output.Where(p => p.City.Contains(searchText, StringComparison.OrdinalIgnoreCase)
+                || (p.Tillage is not null && p.Tillage.Contains(searchText, StringComparison.OrdinalIgnoreCase)) 
+                || p.PlotNumber.Contains(searchText, StringComparison.OrdinalIgnoreCase)
+                || (p.Area is not null && p.Area.Contains(searchText, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
             }
 
             return output;
@@ -98,6 +106,7 @@ namespace Services
 
                 await usersInTransaction.ReplaceOneAsync(u => u.Id == user.Id, user);
 
+                _cache.Remove(userId);
 
                 await session.CommitTransactionAsync();
             }

@@ -7,7 +7,7 @@ namespace Services
         Task DeletePlot(string plotId, string userId);
         Task<List<PlotModel>> GetAllPlots();
         Task<PlotModel> GetPlot(string id);
-        Task<List<PlotModel>> GetUsersPlots(string userId);
+        Task<List<PlotModel>> GetUsersPlots(string userId, string searchText);
         Task UpdateSuggestion(PlotModel plot);
     }
 }
