@@ -8,6 +8,7 @@ namespace Services
         Task Logout();
         Task<bool> Register(RegisterUserDto dto);
         Task<UserModel> GetUserById(string id);
-        Task<bool> UpdateUser(UserModel model, string id); 
+        Task<bool> UpdateUser(UserModel model, string id);
+        List<UserModel> GetAllUsers();
     }
 }

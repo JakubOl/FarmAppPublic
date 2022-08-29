@@ -102,17 +102,16 @@ namespace PlotAppMVC.Controllers
 
         [HttpGet("/profile")]
         [Authorize]
-        public ActionResult Profile()
+        public async Task<ActionResult> Profile()
         {
             var userId = User?.Identity?.GetUserId();
 
             if(userId is null) return View("/Views/NotFound.cshtml");
-            var user = _accountService.GetUserById(userId);
+            var user = await _accountService.GetUserById(userId);
 
             if (user is null) return View("/Views/NotFound.cshtml");
 
-            ViewData["userData"] = user;
-            return View();
+            return View(user);
         }
 
         [HttpPost("/profile/{userId}/update")]
@@ -129,7 +128,36 @@ namespace PlotAppMVC.Controllers
             {
                 ViewData["message"] = "User Update Failed";
             }
+            return View(userModel);
+        }
+
+        [HttpGet("users")]
+        [Authorize(Roles = "Owner")]
+        public ActionResult Users()
+        {
+            var users = _accountService.GetAllUsers();
+
+            ViewData["users"] = users;
             return View();
+        }
+
+        [HttpPost("users/{userId}")]
+        [Authorize(Roles = "Owner")]
+        public async Task<ActionResult> Users(RoleDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(dto);
+            }
+            var result = await _roleService.CreateRole(dto);
+
+            if (result)
+            {
+                ViewData["Message"] = "Role Created";
+                return Redirect("/");
+            }
+            ViewData["Message"] = "Creating role failed";
+            return View(dto);
         }
     }
 }
