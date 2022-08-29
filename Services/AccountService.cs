@@ -9,12 +9,13 @@ namespace Services
     {
         private UserManager<UserModel> _userManager;
         private SignInManager<UserModel> _signInManager;
-        public string CurrentUserId { get; set; }
+        private readonly UserManager<UserModel> _user;
 
-        public AccountService(UserManager<UserModel> userManager, SignInManager<UserModel> signInManager)
+        public AccountService(UserManager<UserModel> userManager, SignInManager<UserModel> signInManager, UserManager<UserModel> user)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _user = user;
         }
 
         public async Task<bool> Register(RegisterUserDto dto)
@@ -56,7 +57,6 @@ namespace Services
                 Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(appUser, dto.Password, false, false);
                 if (result.Succeeded)
                 {
-                    CurrentUserId = appUser.UserId;
                     return true;
                 }
             }
@@ -68,9 +68,24 @@ namespace Services
             await _signInManager.SignOutAsync();
         }
 
-        public string GetCurrentUserId()
+        public async Task<UserModel> GetUserById(string id)
         {
-            return CurrentUserId;
+            return await _user.FindByIdAsync(id);
+        }
+
+        public async Task<bool> UpdateUser(UserModel userDto, string id)
+        {
+            var user = await GetUserById(id);
+
+            user.Address = userDto.Address;
+            user.Country = userDto.Country;
+            user.FirstName = userDto.FirstName;
+            user.LastName = userDto.LastName;
+            user.Email = userDto.Email;
+
+            var updated = _user.UpdateAsync(user);
+
+            return updated.IsCompletedSuccessfully;
         }
     }
 }

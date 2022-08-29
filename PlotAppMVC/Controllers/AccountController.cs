@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Dtos;
+using Models.Entities;
 using Services;
 
 namespace PlotAppMVC.Controllers
@@ -96,6 +98,37 @@ namespace PlotAppMVC.Controllers
             }
             ViewData["Message"] = "Creating role failed";
             return View(dto);
+        }
+
+        [HttpGet("/profile")]
+        public ActionResult Profile()
+        {
+            var userId = User?.Identity?.GetUserId();
+
+            return View();
+            if(userId is null) return View("/Views/NotFound.cshtml");
+            var user = _accountService.GetUserById(userId);
+
+            if (user is null) return View("/Views/NotFound.cshtml");
+
+            ViewData["userData"] = user;
+            return View();
+        }
+
+        [HttpPost("/profile/{userId}/update")]
+        public async Task<ActionResult> Profile([FromForm] UserModel userModel, [FromRoute] string userId)
+        {
+            var userUpdated = await _accountService.UpdateUser(userModel, userId);
+
+            if(userUpdated)
+            {
+                ViewData["message"] = "User Updated Successfully";
+            }
+            else
+            {
+                ViewData["message"] = "User Update Failed";
+            }
+            return View();
         }
     }
 }
