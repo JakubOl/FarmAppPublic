@@ -101,11 +101,11 @@ namespace PlotAppMVC.Controllers
         }
 
         [HttpGet("/profile")]
+        [Authorize]
         public ActionResult Profile()
         {
             var userId = User?.Identity?.GetUserId();
 
-            return View();
             if(userId is null) return View("/Views/NotFound.cshtml");
             var user = _accountService.GetUserById(userId);
 
@@ -116,6 +116,7 @@ namespace PlotAppMVC.Controllers
         }
 
         [HttpPost("/profile/{userId}/update")]
+        [Authorize]
         public async Task<ActionResult> Profile([FromForm] UserModel userModel, [FromRoute] string userId)
         {
             var userUpdated = await _accountService.UpdateUser(userModel, userId);

@@ -5,9 +5,9 @@
     var message = ViewData["Message"] as string;
 }
 
-    <section class="vh-100">
-  <div class="container py-5 h-100">
-    <div class="row d-flex align-items-center justify-content-center h-100">
+    <section class="h-100 d-flex">
+  <div class="container py-5 card"  style="border-radius: 25px;">
+    <div class="row d-flex align-items-center justify-content-center">
       <div class="col-md-8 col-lg-7 col-xl-6">
         <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.svg"
           class="img-fluid" alt="Phone image">
@@ -22,15 +22,17 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
           <!-- Email input -->
           <div class="form-outline mb-4">
+              <i class="fa fa-user fa-lg me-3 fa-fw"></i>
             <label class="form-label" for="Email" asp-for="Email">Email address</label>
-            <input type="email" id="Email" class="form-control form-control-lg" placeholder="Email Address" name="Email" />
+            <input type="email" id="Email" class="form-control" placeholder="Email Address" name="Email" />
             <span asp-validation-for="Email" class="text-danger"></span>
 
           </div>
           <!-- Password input -->
           <div class="form-outline mb-4">
+              <i class="fa fa-lock fa-lg me-3 fa-fw"></i>
             <label class="form-label" for="Password" asp-for="Password">Password</label>
-            <input type="password" id="Password" class="form-control form-control-lg" placeholder="Password" name="Password" />
+            <input type="password" id="Password" class="form-control" placeholder="Password" name="Password" />
             <span asp-validation-for="Password" class="text-danger"></span>
           </div>
 
