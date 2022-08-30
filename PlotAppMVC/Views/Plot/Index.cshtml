@@ -70,15 +70,14 @@ async function getPlots(searchText){
 
         // Create summary table row
         areaSum = areaSum.toFixed(3);
-        const summaryRow = document.createElement("tr");
+        const summaryRow = document.createElement("div");
+            summaryRow.classList.add("d-flex");
+            summaryRow.classList.add("justify-content-between");
+
             summaryRow.innerHTML = `
-              <th scope="row" colspan="2">Summary: </th>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td class="text-right">${areaSum} ha</td>
+                    <p class="mb-0">Suma: </p><p class="mb-0">${areaSum} ha</p>
             `;
-            plotTable.appendChild(summaryRow);
+            document.querySelector(".summary").appendChild(summaryRow);
 
     })
     .catch(error => console.error("Unable to get items.", error));
@@ -90,14 +89,14 @@ function showForm() {
 </script>
 
 
-<section class="d-flex justify-content-center align-items-md-start m-2 gap-5">
     @if(message is not null){
         <div>@message</div>
     }
+<section class="d-flex justify-content-center align-items-md-start m-2 gap-5">
     @if (User?.Identity?.IsAuthenticated??false)
  {
 
-     <div style="">
+     <div class="d-flex flex-column" style="min-height: 80vh;">
 
 	<nav class="flex-column plotForm hidden">
 		<div class="nav-item">
@@ -130,6 +129,7 @@ function showForm() {
     <input id="searchText" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
     <button type="button" id="searchButton" class="btn btn-outline-success my-2 my-sm-0">Search</button>
   </form>
+  <div class="d-flex flex-column justify-content-between align-items-between" style="height: 100%;">
 <table class="table table-hover table-dark">
   <thead>
     <tr>
@@ -146,6 +146,8 @@ function showForm() {
   <tbody class="userPlots">
   </tbody>
 </table>
+<div class="summary bg-dark text-light p-2"></div>
+</div>
 </div>
 }
 <div class="text-center">

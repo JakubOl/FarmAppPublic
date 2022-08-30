@@ -25,6 +25,7 @@ namespace Services
                 UserName = dto.EmailAddress,
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
+                Email = dto.EmailAddress,
                 EmailAddress = dto.EmailAddress,
                 DisplayName = dto.FirstName + " " + dto.LastName
             };
@@ -48,10 +49,10 @@ namespace Services
         {
             
             UserModel appUser = await _userManager.FindByEmailAsync(dto.Email);
-            if (dto.Email == "jakub@jakub.com" && appUser.Roles.Count == 1)
-            {
-                await _userManager.AddToRoleAsync(appUser, "Owner");
-            }
+            //if (dto.Email == "jakub@jakub.com" && appUser.Roles.Count == 1)
+            //{
+            //    await _userManager.AddToRoleAsync(appUser, "Owner");
+            //}
             if (appUser is not null)
             {
                 Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(appUser, dto.Password, false, false);
@@ -90,7 +91,7 @@ namespace Services
             user.PhoneNumber = userDto.PhoneNumber;
             user.MobileNumber = userDto.MobileNumber;
             user.StateRegion = userDto.StateRegion;
-            user.EmailAddress = user.EmailAddress;
+            user.Email = user.Email;
 
             var updated = await _user.UpdateAsync(user);
 
