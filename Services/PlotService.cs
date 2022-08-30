@@ -11,6 +11,7 @@ namespace Services
         private readonly UserManager<UserModel> _user;
         private readonly IMongoCollection<PlotModel> _plots;
         private const string CacheName = "PlotData";
+        private bool dbChanged = false;
 
         public PlotService(IDbConnection db, IMemoryCache cache, UserManager<UserModel> user)
         {
@@ -35,7 +36,7 @@ namespace Services
         public async Task<List<PlotModel>> GetUsersPlots(string userId, string searchText)
         {
             var output = _cache.Get<List<PlotModel>>(userId);
-            if (output is null)
+            if (output is null || dbChanged == true)
             {
                 var user = await _user.FindByIdAsync(userId);
                 var userPlotsId = user.PlotsIds;
@@ -45,6 +46,7 @@ namespace Services
                 output = userPlots.ToList();
 
                 _cache.Set(userId, output, TimeSpan.FromMinutes(1));
+                dbChanged = false;
             }
             if (!string.IsNullOrWhiteSpace(searchText))
             {
@@ -122,6 +124,8 @@ namespace Services
 
             _cache.Remove(userId);
 
+            dbChanged = true;
+
             plot.Area = plot.Area.Replace(",", ".");
 
             //using var session = await client.StartSessionAsync();
@@ -152,7 +156,6 @@ namespace Services
                 await usersInTransaction.ReplaceOneAsync(u => u.Id == user.Id, user);
 
                 _cache.Remove(userId);
-
                 //await session.CommitTransactionAsync();
             }
             catch (Exception ex)
@@ -212,6 +215,8 @@ namespace Services
                 var user = await _user.FindByIdAsync(userId);
                 user.PlotsIds.Remove(plotId);
                 await usersInTransaction.ReplaceOneAsync(u => u.Id == user.Id, user);
+
+                dbChanged = true;
 
                 //await session.CommitTransactionAsync();
             }

@@ -25,11 +25,38 @@ async function initialize() {
     }).addTo(map);
 }
 
+function plotEditToggle (plot){
+    console.log(plots);
+        document.querySelector(".modalBackground").classList.toggle("hidden");
+        const modal = document.querySelector(".modalForm");
+        modal.innerHTML = "";
+        const modalView = `<form class="" method="post" action="/plot/${plot.id}/edit">
+
+				<div class="form-group">
+					<label for="city" class="text-black">Miejscowość</label>
+					<input type="text" class="form-control" id="city" name="City" value="${plot.city}">
+				</div>
+				<div class="form-group">
+					<label for="plotNumber" class="text-black">Numer działki</label>
+					<input type="text" class="form-control" id="plotNumber" value="${plot.plotNumber}" name="PlotNumber">
+				</div>
+				<div class="form-group">
+					<label for="area" class="text-black">Powierzchnia (ha)</label>
+					<input type="text" class="form-control" id="area" value="${plot.area}" name="Area">
+				</div>
+                <div class="form-group">
+					<label for="area" class="text-black">Uprawa</label>
+					<input type="text" class="form-control" id="tillage" value="${plot.tillage}" name="tillage">
+				</div>
+				<button type="submit" class="btn btn-primary my-2 align-self-center w-100" >Zapisz</button>
+				</form>`
+            modal.appendChild(modalView);
+}
+
 async function getPlots(searchText){
     if(!searchText){
         searchText = "";
     }
-    console.log(searchText);
     plots = await fetch(`/plots?searchText=${searchText}`).then(response => response.json()).then(data => { 
         let areaSum = 0;
         const plotTable = document.querySelector(".userPlots");
@@ -38,7 +65,7 @@ async function getPlots(searchText){
         data.forEach(function(plot, idx) {
             // Create marker
             var marker = new L.marker([plot.longitude, plot.latitude])
-            .bindPopup(`${plot.city} ${plot.plotNumber} ${plot.area}ha`).addTo(map);
+            .bindPopup(`<div class="text-center">${plot.city} ${plot.plotNumber} <br> ${plot.tillage} <br> ${plot.area}ha</div>`).addTo(map);
 
             const plotArea = parseFloat(plot.area);
             if(plotArea !== NaN){
@@ -49,6 +76,7 @@ async function getPlots(searchText){
             const plotRow = document.createElement("tr");
             plotRow.classList.add("plotListItemStyle");
             plotRow.addEventListener("click", (() => goToPopUp(plot.longitude, plot.latitude)));
+
             plotRow.innerHTML = `
               <th class="align-middle" scope="row">${idx + 1}</th>
               <td class="align-middle">${plot.city}</td>
@@ -57,27 +85,20 @@ async function getPlots(searchText){
               <td class="align-middle">${plot.tillage}</td>
               <td class="align-middle">
                 <form class="d-flex" method="post" action="/plot/${plot.id}">
-                    <a class="btn btn-sm btn-primary mx-1" href="/plot/edit/${plot.id}"><b>Edit</b></a>
-                    <button type="submit" class="btn btn-sm btn-danger"><b>Delete</b></button>
+                    <!-- <button type="button" class="btn btn-sm btn-primary">Edit</button> -->
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                 </form>
               </td>
             `;
             plotTable.appendChild(plotRow);
-
 
             goToPopUp(plot.longitude, plot.latitude);
         })
 
         // Create summary table row
         areaSum = areaSum.toFixed(3);
-        const summaryRow = document.createElement("div");
-            summaryRow.classList.add("d-flex");
-            summaryRow.classList.add("justify-content-between");
 
-            summaryRow.innerHTML = `
-                    <p class="mb-0">Suma: </p><p class="mb-0">${areaSum} ha</p>
-            `;
-            document.querySelector(".summary").appendChild(summaryRow);
+        document.querySelector(".summary").innerHTML = `<div class="d-flex justify-content-between"><p class="mb-0">Suma: </p><p class="mb-0">${areaSum} ha</p></div>`;
 
     })
     .catch(error => console.error("Unable to get items.", error));
@@ -92,11 +113,22 @@ function showForm() {
     @if(message is not null){
         <div>@message</div>
     }
-<section class="d-flex justify-content-center align-items-md-start m-2 gap-5">
+<section class="d-flex justify-content-center align-items-md-start m-2 gap-5 p-3" style="height: 100%">
+    <div class="modalBackground hidden" style="position: absolute;
+z-index: 1100;
+background: white;
+width: 100%;
+height: 80%;
+">
+    <div style="position:relative; top: 50%; left: 50%;">
+              <div class="modalForm">
+              </div>
+    </div>
+  </div>
     @if (User?.Identity?.IsAuthenticated??false)
  {
 
-     <div class="d-flex flex-column" style="min-height: 80vh;">
+     <div class="d-flex flex-column">
 
 	<nav class="flex-column plotForm hidden">
 		<div class="nav-item">
@@ -130,7 +162,7 @@ function showForm() {
     <button type="button" id="searchButton" class="btn btn-outline-success my-2 my-sm-0">Search</button>
   </form>
   <div class="d-flex flex-column justify-content-between align-items-between" style="height: 100%;">
-<table class="table table-hover table-dark">
+<table class="table table-hover table-dark m-0">
   <thead>
     <tr>
       <th scope="col">#</th>
@@ -143,22 +175,27 @@ function showForm() {
       </th>
     </tr>
   </thead>
+</table>
+<div class="plotsList" style="max-height:700px; overflow:auto;" class="m-0">
+    <table class="overflow-auto table table-hover table-dark  m-0">
   <tbody class="userPlots">
   </tbody>
 </table>
-<div class="summary bg-dark text-light p-2"></div>
+</div>
+<div class="summary bg-dark text-light p-2 m-0"></div>
 </div>
 </div>
 }
-<div class="text-center">
+<div>
     <div id="map"></div>
 </div>
  @if (User?.Identity?.IsAuthenticated == false)
  {
      <h1>Aby rozpocząć zarządzanie swoimi działkami <a href="/login">zaloguj</a> lub <a href="/register">zarejestruj</a> się!</h1>
  }
- </section>
 
+ </section>
+   
  @if (User?.Identity?.IsAuthenticated == true)
  {
      <script type="text/javascript">
@@ -167,7 +204,6 @@ function showForm() {
      </script>
  }
 
- 
 
 <style>
     #map{
@@ -181,6 +217,9 @@ function showForm() {
         text-align: center;
         cursor: pointer;
     }
+    .plotsList::-webkit-scrollbar {
+  display: none;
+}
 
 </style>
 
