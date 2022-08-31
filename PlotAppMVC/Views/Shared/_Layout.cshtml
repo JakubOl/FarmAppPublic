@@ -18,9 +18,9 @@
    integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
    crossorigin=""></script>
 </head>
-<body>
+<body class="bg-dark">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom text-white box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Plot" asp-action="Index">PlotAppMVC</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -30,22 +30,22 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Plot" asp-action="Index">Map</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Plot" asp-action="Index">Map</a>
                         </li>
                         @if(User?.Identity?.IsAuthenticated ?? false)
                         {
 
                             <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Profile">Profile</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Account" asp-action="Profile">Profile</a>
                             </li>
                             @if (User.IsInRole("Owner"))
                             {
 
                                 <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Role">Roles</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Account" asp-action="Role">Roles</a>
                             </li>
                             <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Users">Manage Users</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Account" asp-action="Users">Manage Users</a>
                             </li>
 
                             }
@@ -56,17 +56,17 @@
                         @if(User?.Identity?.IsAuthenticated ?? false)
                         {                         
                             <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
                             </li>
                             
                         }
                         else
                         {
                             <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
                             </li>
                             <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
                             </li>
                         }
                     </ul>
@@ -74,15 +74,15 @@
             </div>
         </nav>
     </header>
-    <section class="h-100 my-auto overflow-hidden">
+    <section class="bg-dark h-100 my-auto overflow-hidden">
             <main role="main">
                 @RenderBody()
             </main>
     </section>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-muted text-center">
         <div class="container">
-            &copy; 2022 - PlotAppMVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2022 - PlotAppMVC
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

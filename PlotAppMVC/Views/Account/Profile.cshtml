@@ -4,13 +4,13 @@
     var message = ViewData["message"] as string;
 }
 
-<div class="container rounded bg-white mt-5 mb-5">
+<div class="container rounded bg-dark mt-5 mb-5 text-light">
     <div class="row d-flex justify-content-center">
         <div class="col-md-3 border-right">
             <div class="d-flex flex-column align-items-center text-center p-3 py-5">
                 <img class="rounded-circle mt-5" width="150px" src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
-                <span class="font-weight-bold">@Model.FirstName @Model.LastName</span>
-                <span class="text-black-50">@Model.Email</span>
+                <span class="font-weight-bold"><b>@Model.FirstName @Model.LastName</b></span>
+                <span class="text-light-50">@Model.Email</span>
                 <span> </span>
             </div>
         </div>
