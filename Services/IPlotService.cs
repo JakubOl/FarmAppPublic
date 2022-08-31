@@ -8,6 +8,6 @@ namespace Services
         Task<List<PlotModel>> GetAllPlots();
         Task<PlotModel> GetPlot(string id);
         Task<List<PlotModel>> GetUsersPlots(string userId, string searchText);
-        Task UpdateSuggestion(PlotModel plot);
+        Task<bool> UpdatePlot(string plotId, PlotModel plot, string userId);
     }
 }

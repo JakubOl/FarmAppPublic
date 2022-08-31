@@ -72,5 +72,35 @@ namespace PlotAppMVC.Controllers
             await _plotService.DeletePlot(id, userId);
             return Redirect("/");
         }
+
+        [HttpGet("/plot/{id}/edit")]
+        public async Task<ActionResult> EditPlot(string id)
+        {
+            var plot = await _plotService.GetPlot(id);
+
+            return View(plot);
+        }
+
+        [HttpPost("/plot/{id}/edit")]
+        public async Task<ActionResult> EditPlot([FromRoute] string id, [FromForm] PlotModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var userId = User.Identity.GetUserId();
+
+            var plotUpdated = await _plotService.UpdatePlot(id, model, userId);
+
+            if (plotUpdated)
+            {
+                ViewData["message"] = "Plot Updated Successfully";
+                return Redirect("/");
+            }
+
+            ViewData["message"] = "Plot Update Failed";
+            return View(model);
+        }
     }
 }

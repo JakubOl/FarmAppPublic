@@ -118,6 +118,11 @@ namespace PlotAppMVC.Controllers
         [Authorize]
         public async Task<ActionResult> Profile([FromForm] UserModel userModel, [FromRoute] string userId)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(userModel);
+            }
+
             var userUpdated = await _accountService.UpdateUser(userModel, userId);
 
             if(userUpdated)

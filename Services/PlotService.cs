@@ -11,7 +11,6 @@ namespace Services
         private readonly UserManager<UserModel> _user;
         private readonly IMongoCollection<PlotModel> _plots;
         private const string CacheName = "PlotData";
-        private bool dbChanged = false;
 
         public PlotService(IDbConnection db, IMemoryCache cache, UserManager<UserModel> user)
         {
@@ -23,20 +22,20 @@ namespace Services
 
         public async Task<List<PlotModel>> GetAllPlots()
         {
-            var output = _cache.Get<List<PlotModel>>(CacheName);
-            if (output is null)
-            {
+            //var output = _cache.Get<List<PlotModel>>(CacheName);
+            //if (output is null)
+            //{
                 var result = await _plots.FindAsync(_ => true);
-                output = result.ToList();
-                _cache.Set(CacheName, output, TimeSpan.FromMinutes(1));
-            }
+                var output = result.ToList();
+                //_cache.Set(CacheName, output, TimeSpan.FromMinutes(1));
+            //}
             return output;
         }
 
         public async Task<List<PlotModel>> GetUsersPlots(string userId, string searchText)
         {
             var output = _cache.Get<List<PlotModel>>(userId);
-            if (output is null || dbChanged == true)
+            if (output is null)
             {
                 var user = await _user.FindByIdAsync(userId);
                 var userPlotsId = user.PlotsIds;
@@ -46,7 +45,6 @@ namespace Services
                 output = userPlots.ToList();
 
                 _cache.Set(userId, output, TimeSpan.FromMinutes(1));
-                dbChanged = false;
             }
             if (!string.IsNullOrWhiteSpace(searchText))
             {
@@ -62,15 +60,27 @@ namespace Services
 
         public async Task<PlotModel> GetPlot(string id)
         {
-            //var results = await _plots.FindAsync(s => s.Id == id);
-            //return results.FirstOrDefault();
-            throw new NotImplementedException();
+            var result = await _plots.FindAsync(s => s.Id == id);
+            return result.FirstOrDefault();
         }
 
-        public async Task UpdateSuggestion(PlotModel plot)
+        public async Task<bool> UpdatePlot(string plotId, PlotModel plot, string userId)
         {
-            await _plots.ReplaceOneAsync(s => s.Id == plot.Id, plot);
-            _cache.Remove(CacheName);
+            var plotEntity = await GetPlot(plotId);
+
+            plotEntity.City = plot.City;
+            plotEntity.Tillage = plot.Tillage;
+            plotEntity.Area = plot.Area;
+
+            var result = await _plots.ReplaceOneAsync(p => p.Id == plotId, plotEntity);
+
+            _cache.Remove(userId);
+
+            if(result.ModifiedCount > 0)
+            {
+                return true;
+            }
+            return false;
         }
 
         //public async Task CreatePlot(PlotModel plot, string userId)
@@ -123,8 +133,6 @@ namespace Services
             var client = _db.Client;
 
             _cache.Remove(userId);
-
-            dbChanged = true;
 
             plot.Area = plot.Area.Replace(",", ".");
 
@@ -215,8 +223,6 @@ namespace Services
                 var user = await _user.FindByIdAsync(userId);
                 user.PlotsIds.Remove(plotId);
                 await usersInTransaction.ReplaceOneAsync(u => u.Id == user.Id, user);
-
-                dbChanged = true;
 
                 //await session.CommitTransactionAsync();
             }

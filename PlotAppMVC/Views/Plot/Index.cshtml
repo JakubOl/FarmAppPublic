@@ -85,7 +85,7 @@ async function getPlots(searchText){
               <td class="align-middle">${plot.tillage}</td>
               <td class="align-middle">
                 <form class="d-flex justify-content-center" method="post" action="/plot/${plot.id}">
-                    <!-- <button type="button" class="btn btn-sm btn-primary">Edit</button> -->
+                    <a href="/plot/${plot.id}/edit" class="btn btn-sm btn-primary">Edit</a>
                     <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                 </form>
               </td>
@@ -113,7 +113,7 @@ function showForm() {
     @if(message is not null){
         <div>@message</div>
     }
-<section class="d-flex justify-content-center align-items-md-start m-2 gap-5 p-3"">
+<section class="d-flex justify-content-center align-items-md-start m-2 gap-5 p-3 w-100">
 
     @if (User?.Identity?.IsAuthenticated??false)
  {
@@ -175,12 +175,12 @@ function showForm() {
         <div class="summary bg-dark text-light p-2 m-0"></div>
 </div>
 }
-<div class="d-flex justify-content-center">
+<div class="d-flex justify-content-center h-100 w-100">
     <div id="map"></div>
 </div>
  @if (User?.Identity?.IsAuthenticated == false)
  {
-     <h1>Aby rozpocząć zarządzanie swoimi działkami <a href="/login">zaloguj</a> lub <a href="/register">zarejestruj</a> się!</h1>
+     <h1 class="text-light">Aby rozpocząć zarządzanie swoimi działkami <a href="/login">zaloguj</a> lub <a href="/register">zarejestruj</a> się!</h1>
  }
 
  </section>
@@ -196,8 +196,8 @@ function showForm() {
 
 <style>
     #map{
-        width: 800px;
-        height: 800px;
+        height: Calc(1px + 100%);
+        width:  Calc(1px + 100%);
     }
     .hidden{
         display:none;
