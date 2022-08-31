@@ -7,31 +7,25 @@
 <script>
 let map;
 let plots;
-
 window.onload = async function() {
     initialize();
 }
-
 function goToPopUp(longitude, latitude) {
     map.setView([longitude, latitude], 18);
 }
-
 async function initialize() {
     map = new L.map('map').setView([50.041187, 21.999121], 18);
-
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '© OpenStreetMap'
     }).addTo(map);
 }
-
 function plotEditToggle (plot){
     console.log(plots);
         document.querySelector(".modalBackground").classList.toggle("hidden");
         const modal = document.querySelector(".modalForm");
         modal.innerHTML = "";
         const modalView = `<form class="" method="post" action="/plot/${plot.id}/edit">
-
 				<div class="form-group">
 					<label for="city" class="text-black">Miejscowość</label>
 					<input type="text" class="form-control" id="city" name="City" value="${plot.city}">
@@ -52,7 +46,6 @@ function plotEditToggle (plot){
 				</form>`
             modal.appendChild(modalView);
 }
-
 async function getPlots(searchText){
     if(!searchText){
         searchText = "";
@@ -61,22 +54,18 @@ async function getPlots(searchText){
         let areaSum = 0;
         const plotTable = document.querySelector(".userPlots");
         plotTable.innerHTML = "";
-
         data.forEach(function(plot, idx) {
             // Create marker
             var marker = new L.marker([plot.longitude, plot.latitude])
             .bindPopup(`<div class="text-center">${plot.city} ${plot.plotNumber} <br> ${plot.tillage} <br> ${plot.area}ha</div>`).addTo(map);
-
             const plotArea = parseFloat(plot.area);
             if(plotArea !== NaN){
                   areaSum += plotArea;
             };
-
             // Create table row with plot
             const plotRow = document.createElement("tr");
             plotRow.classList.add("plotListItemStyle");
             plotRow.addEventListener("click", (() => goToPopUp(plot.longitude, plot.latitude)));
-
             plotRow.innerHTML = `
               <th class="align-middle" scope="row">${idx + 1}</th>
               <td class="align-middle">${plot.city}</td>
@@ -91,22 +80,17 @@ async function getPlots(searchText){
               </td>
             `;
             plotTable.appendChild(plotRow);
-
             goToPopUp(plot.longitude, plot.latitude);
         })
-
         // Create summary table row
         areaSum = areaSum.toFixed(3);
-
         document.querySelector(".summary").innerHTML = `<div class="d-flex justify-content-between border-bottom"><p class="mb-0">Suma: </p><p class="mb-0">${areaSum} ha</p></div>`;
-
     })
     .catch(error => console.error("Unable to get items.", error));
 }
 function showForm() {
     document.querySelector(".plotForm").classList.toggle("hidden");
 }
-
 </script>
 
 
@@ -209,7 +193,6 @@ function showForm() {
     .plotsList::-webkit-scrollbar {
   display: none;
 }
-
 </style>
 
     <script>

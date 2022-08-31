@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNet.Identity
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -36,7 +37,7 @@
                         {
 
                             <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Account" asp-action="Profile">Profile</a>
+                            <a class="nav-link text-light" href="/profile/@User.Identity.GetUserId()">Profile</a>
                             </li>
                             @if (User.IsInRole("Owner"))
                             {
@@ -74,7 +75,7 @@
             </div>
         </nav>
     </header>
-    <section class="bg-dark d-flex justify-content-center align-items-center" style="height: 100%;">
+    <section class="bg-dark d-flex justify-content-center align-items-center"  style="height: 100%;">
             <main role="main" class="d-flex justify-content-center align-items-centers w-100">
                 @RenderBody()
             </main>

@@ -100,13 +100,17 @@ namespace PlotAppMVC.Controllers
             return View(dto);
         }
 
-        [HttpGet("/profile")]
+        [HttpGet("/profile/{userId}")]
         [Authorize]
-        public async Task<ActionResult> Profile()
+        public async Task<ActionResult> Profile([FromRoute] string userId)
         {
-            var userId = User?.Identity?.GetUserId();
+            if (userId != User?.Identity?.GetUserId() && User?.IsInRole("Owner") == false)
+            {
+                return Redirect("/");
+            }
 
-            if(userId is null) return View("/Views/NotFound.cshtml");
+            if (userId is null) return View("/Views/NotFound.cshtml");
+
             var user = await _accountService.GetUserById(userId);
 
             if (user is null) return View("/Views/NotFound.cshtml");
@@ -118,6 +122,11 @@ namespace PlotAppMVC.Controllers
         [Authorize]
         public async Task<ActionResult> Profile([FromForm] UserModel userModel, [FromRoute] string userId)
         {
+            if (userId != User?.Identity?.GetUserId() && User?.IsInRole("Owner") == false)
+            {
+                return Redirect("/");
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(userModel);
@@ -163,6 +172,24 @@ namespace PlotAppMVC.Controllers
             }
             ViewData["Message"] = "Creating role failed";
             return View(dto);
+        }
+
+        [HttpPost("users/{userId}/delete")]
+        [Authorize(Roles = "Owner")]
+        public async Task<ActionResult> DeleteUser([FromRoute] string userId)
+        {
+            var result = await _accountService.DeleteUser(userId);
+
+            if (result)
+            {
+                ViewData["Message"] = "User Deleted";
+            }
+            else
+            {
+                ViewData["Message"] = "User delete failed";
+            }
+
+            return Redirect("/users");
         }
     }
 }

@@ -1,18 +1,16 @@
 ﻿@{
     var users = ViewData["users"] as List<UserModel>;
+    var message = ViewData["message"] as string;
 }
 
 <div class="container">
+    @if(message is not null)
+    {
+    <h3 class="text-light">@message</h3>
+        
+    }
         <div class="table-wrapper">
-            <div class="table-title">
-                <div class="row">
-                    <div class="col-sm-8"><h2>Employee <b>Details</b></h2></div>
-                    <div class="col-sm-4">
-                        <button type="button" class="btn btn-info add-new"><i class="fa fa-plus"></i> Add New</button>
-                    </div>
-                </div>
-            </div>
-            <table class="table table-bordered">
+            <table class="table table-bordered table-light">
                 <thead>
                     <tr>
                         <th>First Name</th>
@@ -31,8 +29,7 @@
                         <td>@user.Email</td>
                         <td>@user.RoleId</td>
                         <td class="d-flex justify-content-a">
-							<a class="add" title="Add" data-toggle="tooltip"><i class="fa fa-solid fa-plus"></i></a>
-                            <a class="edit" title="Edit" data-toggle="tooltip"><i class="fa fa-solid fa-edit"></i></a>
+                            <a href="/profile/@user.Id" class="edit" title="Edit" data-toggle="tooltip"><i class="fa fa-solid fa-edit"></i></a>
                             <form method="post" action="/users/@user.Id/delete">
                                 <button type="submit" href="" class="btn btn-sm" title="Delete" data-toggle="tooltip"><i class="fa fa-solid fa-trash"></i></button>
                             </form>

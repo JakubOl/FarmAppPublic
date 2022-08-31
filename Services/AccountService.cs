@@ -97,5 +97,22 @@ namespace Services
 
             return updated.Succeeded;
         }
+
+        public async Task<bool> DeleteUser(string userId)
+        {
+            var user = await GetUserById(userId);
+
+            if(user == null) return false;
+
+            try
+            {
+                var result = await _userManager.DeleteAsync(user);
+                return result.Succeeded;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
     }
 }

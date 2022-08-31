@@ -24,7 +24,7 @@
           <div class="form-outline mb-4">
               <i class="fa fa-user fa-lg me-3 fa-fw"></i>
             <label class="form-label" for="Email" asp-for="Email">Email address</label>
-            <input type="email" id="Email" class="form-control" placeholder="Email Address" name="Email" />
+            <input type="email" id="Email" class="form-control" placeholder="Email Address" name="Email" value="@Model?.Email" />
             <span asp-validation-for="Email" class="text-danger"></span>
 
           </div>

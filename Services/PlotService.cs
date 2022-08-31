@@ -118,7 +118,35 @@ namespace Services
 
         //        await usersInTransaction.ReplaceOneAsync(u => u.Id == user.Id, user);
 
-        //        _cache.Remove(userId);
+        //        await session.CommitTransactionAsync();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        await session.AbortTransactionAsync();
+        //        throw;
+        //    }
+        //}
+   
+        //public async Task DeletePlot(string plotId, string userId)
+        //{
+        //    var client = _db.Client;
+
+        //    _cache.Remove(userId);
+
+        //    using var session = await client.StartSessionAsync();
+
+        //    session.StartTransaction();
+
+        //    try
+        //    {
+        //        var db = client.GetDatabase(_db.DbName);
+        //        var plotInTransaction = db.GetCollection<PlotModel>(_db.PlotCollectionName);
+        //        await plotInTransaction.DeleteOneAsync(plot => plot.Id == plotId);
+
+        //        var usersInTransaction = db.GetCollection<UserModel>(_db.UserCollectionName);
+        //        var user = await _user.FindByIdAsync(userId);
+        //        user.PlotsIds.Remove(plotId);
+        //        await usersInTransaction.ReplaceOneAsync(u => u.Id == user.Id, user);
 
         //        await session.CommitTransactionAsync();
         //    }
@@ -128,6 +156,7 @@ namespace Services
         //        throw;
         //    }
         //}
+
         public async Task CreatePlot(PlotModel plot, string userId)
         {
             var client = _db.Client;
@@ -172,36 +201,6 @@ namespace Services
                 throw;
             }
         }
-
-        //public async Task DeletePlot(string plotId, string userId)
-        //{
-        //    var client = _db.Client;
-
-        //    _cache.Remove(userId);
-
-        //    using var session = await client.StartSessionAsync();
-
-        //    session.StartTransaction();
-
-        //    try
-        //    {
-        //        var db = client.GetDatabase(_db.DbName);
-        //        var plotInTransaction = db.GetCollection<PlotModel>(_db.PlotCollectionName);
-        //        await plotInTransaction.DeleteOneAsync(plot => plot.Id == plotId);
-
-        //        var usersInTransaction = db.GetCollection<UserModel>(_db.UserCollectionName);
-        //        var user = await _user.FindByIdAsync(userId);
-        //        user.PlotsIds.Remove(plotId);
-        //        await usersInTransaction.ReplaceOneAsync(u => u.Id == user.Id, user);
-
-        //        await session.CommitTransactionAsync();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        await session.AbortTransactionAsync();
-        //        throw;
-        //    }
-        //}
 
         public async Task DeletePlot(string plotId, string userId)
         {

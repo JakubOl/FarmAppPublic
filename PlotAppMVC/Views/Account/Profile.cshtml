@@ -40,6 +40,12 @@
                         
                 </div>
                 <div class="row mt-3">
+                    <div class="col-md-12 d-none">
+                        <label class="labels">Email</label>
+                            <input type="email" value="@Model.Email" value="@Model.Email" class="form-control" id="Email" name="Email">
+                      <span asp-validation-for="Email" class="text-danger"></span>
+
+                        </div>
                     <div class="col-md-12">
                         <label class="labels">Mobile Number</label>
                             <input type="text" value="@Model.MobileNumber" class="form-control" id="MobileNumber" name="MobileNumber" placeholder="enter phone number">
