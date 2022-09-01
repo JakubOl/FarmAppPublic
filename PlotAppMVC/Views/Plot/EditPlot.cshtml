@@ -13,6 +13,7 @@
 			        <div >
 
 				        <form class="" method="post" action="/plot/@Model.Id/edit">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
 				        <div class="form-group">
 					        <label for="city" class="text-white">Miejscowość</label>
@@ -21,6 +22,7 @@
 				        <div class="form-group">
 					        <label for="area" class="text-white">Powierzchnia (ha)</label>
 					        <input type="text" class="form-control" id="area" placeholder="0.55" name="Area"  value ="@Model.Area">
+                            <span asp-validation-for="Area" class="text-danger"></span>
 				        </div>
                         <div class="form-group">
 					        <label for="area" class="text-white">Uprawa</label>

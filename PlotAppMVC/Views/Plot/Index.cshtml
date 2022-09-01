@@ -1,4 +1,4 @@
-﻿@model Models.Entities.PlotModel;
+﻿@model Models.Dtos.PlotDto;
 @{
     ViewData["Title"] = "Home Page";
     var message = ViewData["Message"] as string;
@@ -20,32 +20,7 @@ async function initialize() {
         attribution: '© OpenStreetMap'
     }).addTo(map);
 }
-function plotEditToggle (plot){
-    console.log(plots);
-        document.querySelector(".modalBackground").classList.toggle("hidden");
-        const modal = document.querySelector(".modalForm");
-        modal.innerHTML = "";
-        const modalView = `<form class="" method="post" action="/plot/${plot.id}/edit">
-				<div class="form-group">
-					<label for="city" class="text-black">Miejscowość</label>
-					<input type="text" class="form-control" id="city" name="City" value="${plot.city}">
-				</div>
-				<div class="form-group">
-					<label for="plotNumber" class="text-black">Numer działki</label>
-					<input type="text" class="form-control" id="plotNumber" value="${plot.plotNumber}" name="PlotNumber">
-				</div>
-				<div class="form-group">
-					<label for="area" class="text-black">Powierzchnia (ha)</label>
-					<input type="text" class="form-control" id="area" value="${plot.area}" name="Area">
-				</div>
-                <div class="form-group">
-					<label for="area" class="text-black">Uprawa</label>
-					<input type="text" class="form-control" id="tillage" value="${plot.tillage}" name="tillage">
-				</div>
-				<button type="submit" class="btn btn-primary my-2 align-self-center w-100" >Zapisz</button>
-				</form>`
-            modal.appendChild(modalView);
-}
+
 async function getPlots(searchText){
     if(!searchText){
         searchText = "";
@@ -58,10 +33,23 @@ async function getPlots(searchText){
             // Create marker
             var marker = new L.marker([plot.longitude, plot.latitude])
             .bindPopup(`<div class="text-center">${plot.city} ${plot.plotNumber} <br> ${plot.tillage} <br> ${plot.area}ha</div>`).addTo(map);
-            const plotArea = parseFloat(plot.area);
-            if(plotArea !== NaN){
-                  areaSum += plotArea;
-            };
+            let plotArea = parseFloat(plot.area);
+
+
+            if(plot.area === null){
+                plot.area = 0;
+            }
+
+            if(plot.tillage === null){
+                plot.tillage = "";
+            }
+
+            if(plotArea === null || isNaN(plotArea) === true || plotArea === undefined){
+                plotArea = 0;
+            }
+            
+            areaSum += plotArea;
+
             // Create table row with plot
             const plotRow = document.createElement("tr");
             plotRow.classList.add("plotListItemStyle");
@@ -94,9 +82,7 @@ function showForm() {
 </script>
 
 
-    @if(message is not null){
-        <div>@message</div>
-    }
+    
 <section class="d-flex justify-content-center align-items-md-start m-2 gap-5 p-3 w-100">
 
     @if (User?.Identity?.IsAuthenticated??false)
@@ -110,28 +96,35 @@ function showForm() {
 			        <div >
 
 				        <form class="" method="post" action="/plot">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
 				        <div class="form-group">
 					        <label for="city" class="text-white">Miejscowość</label>
-					        <input type="text" class="form-control" id="city" placeholder="Kraczkowa" name="City">
+					        <input type="text" class="form-control" id="city" placeholder="Kraczkowa" name="City" value="@Model?.City" >
+                            <span asp-validation-for="City" class="text-danger"></span>
 				        </div>
 				        <div class="form-group">
 					        <label for="plotNumber" class="text-white">Numer działki</label>
-					        <input type="text" class="form-control" id="plotNumber" placeholder="3374/16" name="PlotNumber">
+					        <input type="text" class="form-control" id="plotNumber" placeholder="3374/16" name="PlotNumber"  value="@Model?.PlotNumber">
+                            <span asp-validation-for="PlotNumber" class="text-danger"></span>
 				        </div>
 				        <div class="form-group">
 					        <label for="area" class="text-white">Powierzchnia (ha)</label>
-					        <input type="text" class="form-control" id="area" placeholder="0.55" name="Area">
+					        <input type="text" class="form-control" id="area" placeholder="0.55" name="Area"  value="@Model?.Area">
+                            <span asp-validation-for="Area" class="text-danger"></span>
 				        </div>
                         <div class="form-group">
 					        <label for="area" class="text-white">Uprawa</label>
-					        <input type="text" class="form-control" id="tillage" placeholder="Pszenica" name="tillage">
+					        <input type="text" class="form-control" id="tillage" placeholder="Pszenica" name="tillage"  value="@Model?.Tillage">
 				        </div>
 				        <button type="submit" class="btn btn-primary my-2 align-self-center w-100" >Dodaj działkę</button>
 				        </form>
 			        </div>
 		        </div>
 	        </nav>
+            @if(message is not null){
+        <div><h4 class="text-danger">@message</h4></div>
+    }
             <form class="form-inline d-flex">
             <input id="searchText" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
             <button type="button" id="searchButton" class="btn btn-outline-success my-2 my-sm-0">Search</button>

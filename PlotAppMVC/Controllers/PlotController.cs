@@ -6,6 +6,7 @@ using Models.Entities;
 using Services.ApiFiles;
 using Microsoft.AspNetCore.Authorization;
 using MongoDB.Bson;
+using Models.Dtos;
 
 namespace PlotAppMVC.Controllers
 {
@@ -13,19 +14,15 @@ namespace PlotAppMVC.Controllers
     public class PlotController : Controller
     {
         private readonly IPlotService _plotService;
-        private readonly IJSRuntime _js;
-        private readonly IAccountService _accountService;
 
-        public PlotController(IPlotService plotService, IJSRuntime js, IAccountService accountService)
+        public PlotController(IPlotService plotService)
         {
             _plotService = plotService;
-            _js = js;
-            _accountService = accountService;
         }
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
             return View("Index");
         }
@@ -41,11 +38,12 @@ namespace PlotAppMVC.Controllers
         }
 
         [HttpPost("/plot")]
-        public async Task<ActionResult> AddPlot([FromForm]PlotModel model)
+        public async Task<ActionResult> AddPlot([FromForm]PlotDto model)
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                ViewData["message"] = "Invalid input";
+                return View("Index", model);
             }
 
             var plotCoordinates = await PlotProcessor.LoadPlot(model.City, model.PlotNumber);
@@ -54,12 +52,22 @@ namespace PlotAppMVC.Controllers
                 ViewData["message"] = "Plot not found";
                 return View("Index", model);
             }
-            model.Latitude = plotCoordinates[0];
-            model.Longitude = plotCoordinates[1];
+
+            var plot = new PlotModel()
+            {
+                Area = model.Area,
+                PlotNumber = model.PlotNumber,
+                City = model.City,
+                Tillage = model.Tillage,
+                Latitude = plotCoordinates[0],
+                Longitude = plotCoordinates[1]
+            };
+
+            
 
             var userId = User.Identity.GetUserId();
 
-            await _plotService.CreatePlot(model, userId);
+            await _plotService.CreatePlot(plot, userId);
 
             return Redirect("/");
         }
@@ -84,6 +92,7 @@ namespace PlotAppMVC.Controllers
         [HttpPost("/plot/{id}/edit")]
         public async Task<ActionResult> EditPlot([FromRoute] string id, [FromForm] PlotModel model)
         {
+            model.Id = id;
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -96,7 +105,7 @@ namespace PlotAppMVC.Controllers
             if (plotUpdated)
             {
                 ViewData["message"] = "Plot Updated Successfully";
-                return Redirect("/");
+                return View("Index");
             }
 
             ViewData["message"] = "Plot Update Failed";

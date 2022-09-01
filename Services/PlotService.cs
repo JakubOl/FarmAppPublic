@@ -163,7 +163,7 @@ namespace Services
 
             _cache.Remove(userId);
 
-            plot.Area = plot.Area.Replace(",", ".");
+            plot.Area = plot.Area?.Replace(",", ".");
 
             //using var session = await client.StartSessionAsync();
 

@@ -1,5 +1,6 @@
 ﻿@{
     var users = ViewData["users"] as List<UserModel>;
+    var roles = ViewData["roles"] as List<RoleModel>;
     var message = ViewData["message"] as string;
 }
 
@@ -9,6 +10,7 @@
     <h3 class="text-light">@message</h3>
         
     }
+    
         <div class="table-wrapper">
             <table class="table table-bordered table-light">
                 <thead>
@@ -16,18 +18,34 @@
                         <th>First Name</th>
                         <th>Last Name</th>
                         <th>Email Address</th>
-                        <th>Role Id</th>
+                        <th>Mobile Number</th>
+                        <th>Address</th>
+                        <th>Country</th>
+                        <th>Created</th>
+                        <th>Plots Count</th>
+                        <th>Role</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
+                    @if(users is not null)
+    {
                 @foreach(var user in users)
                 {
                     <tr>
-                        <td>@user.FirstName</td>
-                        <td>@user.LastName</td>
+                        <td>@user?.FirstName</td>
+                        <td>@user?.LastName</td>
                         <td>@user.Email</td>
-                        <td>@user.RoleId</td>
+                        <td>@user?.MobileNumber</td>
+                        <td>@user?.Address</td>
+                        <td>@user?.Country</td>
+                        <td>@user.CreatedDate</td>
+                        <td>@user.PlotsIds?.Count()</td>
+                            <td>@foreach(var role in user.Roles)
+                                {
+                                    <p>@roles.Where(r =>r.Id == role).Select(r => r.Name).FirstOrDefault()</p>
+                                }
+                            </td>
                         <td class="d-flex justify-content-a">
                             <a href="/profile/@user.Id" class="edit" title="Edit" data-toggle="tooltip"><i class="fa fa-solid fa-edit"></i></a>
                             <form method="post" action="/users/@user.Id/delete">
@@ -36,8 +54,15 @@
                         </td>
                     </tr>
                 }
+    }
+
                 </tbody>
             </table>
         </div>
     </div>
 
+    <style>
+        td{
+            text-align: center;
+        }
+    </style>

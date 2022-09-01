@@ -11,6 +11,7 @@ namespace Services
         Task<bool> UpdateUser(UserModel model, string id);
         List<UserModel> GetAllUsers();
         Task<bool> DeleteUser(string userId);
+        Task<List<RoleModel>> GetRoles();
 
     }
 }

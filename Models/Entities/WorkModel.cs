@@ -13,6 +13,6 @@ namespace Models.Entities
 		public string Id { get; set; }
 		public string WorkName { get; set; }
 		public bool IsDone { get; set; } = false;
-
+		public int Time { get; set; }
 	}
 }

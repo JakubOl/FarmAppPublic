@@ -8,14 +8,14 @@ namespace Services
     public class AccountService : IAccountService
     {
         private UserManager<UserModel> _userManager;
+        private readonly RoleManager<RoleModel> _roles;
         private SignInManager<UserModel> _signInManager;
-        private readonly UserManager<UserModel> _user;
 
-        public AccountService(UserManager<UserModel> userManager, SignInManager<UserModel> signInManager, UserManager<UserModel> user)
+        public AccountService(UserManager<UserModel> userManager, SignInManager<UserModel> signInManager, RoleManager<RoleModel> roles)
         {
             _userManager = userManager;
+            _roles = roles;
             _signInManager = signInManager;
-            _user = user;
         }
 
         public async Task<bool> Register(RegisterUserDto dto)
@@ -27,10 +27,15 @@ namespace Services
                 LastName = dto.LastName,
                 Email = dto.EmailAddress,
                 EmailAddress = dto.EmailAddress,
-                DisplayName = dto.FirstName + " " + dto.LastName
+                DisplayName = dto.FirstName + " " + dto.LastName,
+                PlotsIds = new List<string>()
             };
 
+
             IdentityResult result = await _userManager.CreateAsync(newUser, dto.Password);
+
+            await _userManager.AddToRoleAsync(newUser, "User");
+
             if (result.Succeeded)
             {
                 var userLogin = new LoginUserDto()
@@ -71,13 +76,13 @@ namespace Services
 
         public List<UserModel> GetAllUsers()
         {
-            var users = _user.Users.ToList();
+            var users = _userManager.Users.ToList();
             return users;
         }
 
         public async Task<UserModel> GetUserById(string id)
         {
-            return await _user.FindByIdAsync(id);
+            return await _userManager.FindByIdAsync(id);
         }
 
         public async Task<bool> UpdateUser(UserModel userDto, string id)
@@ -93,7 +98,7 @@ namespace Services
             user.StateRegion = userDto.StateRegion;
             user.Email = user.Email;
 
-            var updated = await _user.UpdateAsync(user);
+            var updated = await _userManager.UpdateAsync(user);
 
             return updated.Succeeded;
         }
@@ -113,6 +118,12 @@ namespace Services
             {
                 return false;
             }
+        }
+
+        public async Task<List<RoleModel>> GetRoles()
+        {
+            var results = _roles.Roles.ToList();
+            return results;
         }
     }
 }
