@@ -76,14 +76,14 @@ namespace PlotAppMVC.Controllers
         }
 
         [HttpGet("role")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Owner")]
         public ActionResult Role()
         {
             return View();
         }
 
         [HttpPost("role")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Owner")]
         public async Task<ActionResult> Role(RoleDto dto)
         {
             if (!ModelState.IsValid)
@@ -108,13 +108,15 @@ namespace PlotAppMVC.Controllers
             if (userId != User?.Identity?.GetUserId() && User?.IsInRole("Owner") == false)
             {
                 return Redirect("/");
-            } 
+            }
 
             if (userId is null) return View("/Views/NotFound.cshtml");
 
             var user = await _accountService.GetUserById(userId);
 
             if (user is null) return View("/Views/NotFound.cshtml");
+
+            ViewData["roles"] = _accountService.GetRoles().Result;
 
             return View(user);
         }
@@ -135,7 +137,7 @@ namespace PlotAppMVC.Controllers
 
             var userUpdated = await _accountService.UpdateUser(userModel, userId);
 
-            if(userUpdated)
+            if(userUpdated is not null)
             {
                 ViewData["message"] = "User Updated Successfully";
             }
@@ -143,7 +145,10 @@ namespace PlotAppMVC.Controllers
             {
                 ViewData["message"] = "User Update Failed";
             }
-            return View(userModel);
+
+            ViewData["roles"] = _accountService.GetRoles().Result;
+
+            return View(userUpdated);
         }
 
         [HttpGet("users")]
@@ -159,25 +164,6 @@ namespace PlotAppMVC.Controllers
             ViewData["users"] = users;
             return View();
         }
-
-        //[HttpPost("users")]
-        //[Authorize(Roles = "Owner")]
-        //public async Task<ActionResult> CreateRole(RoleDto dto)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return View(dto);
-        //    }
-        //    var result = await _roleService.CreateRole(dto);
-
-        //    if (result)
-        //    {
-        //        ViewData["Message"] = "Role Created";
-        //        return Redirect("/");
-        //    }
-        //    ViewData["Message"] = "Creating role failed";
-        //    return View(dto);
-        //}
 
         [HttpPost("users/{userId}/delete")]
         [Authorize(Roles = "Owner")]

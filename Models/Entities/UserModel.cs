@@ -14,9 +14,8 @@ namespace Models.Entities
 		public string Country { get; set; }
 		public string StateRegion { get; set; }
 		public string passwordHash { get; set; }
-		public int RoleId { get; set; } = 1;
+		public string Role { get; set; }
 		public DateTime CreatedDate { get; set; } = DateTime.Now;
-		public virtual RoleModel Role { get; set; }
 		public List<string> PlotsIds { get; set; }
 	}
 }

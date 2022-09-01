@@ -41,12 +41,9 @@
                         <td>@user?.Country</td>
                         <td>@user.CreatedDate</td>
                         <td>@user.PlotsIds?.Count()</td>
-                            <td>@foreach(var role in user.Roles)
-                                {
-                                    <p>@roles.Where(r =>r.Id == role).Select(r => r.Name).FirstOrDefault()</p>
-                                }
-                            </td>
-                        <td class="d-flex justify-content-a">
+                         <td>@roles?.FirstOrDefault(r => r.Id == user?.Roles[0])?.Name</td>
+    
+                                <td class="d-flex justify-content-a">
                             <a href="/profile/@user.Id" class="edit" title="Edit" data-toggle="tooltip"><i class="fa fa-solid fa-edit"></i></a>
                             <form method="post" action="/users/@user.Id/delete">
                                 <button type="submit" href="" class="btn btn-sm" title="Delete" data-toggle="tooltip"><i class="fa fa-solid fa-trash"></i></button>

@@ -85,7 +85,7 @@ namespace Services
             return await _userManager.FindByIdAsync(id);
         }
 
-        public async Task<bool> UpdateUser(UserModel userDto, string id)
+        public async Task<UserModel> UpdateUser(UserModel userDto, string id)
         {
             var user = await GetUserById(id);
 
@@ -98,9 +98,15 @@ namespace Services
             user.StateRegion = userDto.StateRegion;
             user.Email = user.Email;
 
-            var updated = await _userManager.UpdateAsync(user);
+            if(userDto.Role is not null)
+            {
+                var roleGuid = new Guid(userDto.Role);
+                user.Roles[0] = roleGuid;
+            }
 
-            return updated.Succeeded;
+            await _userManager.UpdateAsync(user);
+
+            return user;
         }
 
         public async Task<bool> DeleteUser(string userId)
