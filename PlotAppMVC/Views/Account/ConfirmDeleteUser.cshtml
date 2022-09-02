@@ -1,0 +1,18 @@
+﻿@{
+    var user = ViewData["user"] as UserModel;
+}
+
+<div id="id01" class="modal">
+  <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+  <form class="modal-content" action="/users/@user.Id/delete/confirmed">
+    <div class="container">
+      <h1>Delete Account</h1>
+      <p>Are you sure you want to delete user: @user.Email</p>
+
+      <div class="clearfix">
+        <a href="/" class="cancelbtn">Cancel</a>
+        <button type="submit" class="deletebtn">Delete</button>
+      </div>
+    </div>
+  </form>
+</div>

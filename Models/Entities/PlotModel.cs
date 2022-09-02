@@ -19,7 +19,6 @@ namespace Models.Entities
 		public decimal Longitude { get; set; }
 		public string Tillage { get; set; }
 		public int TillageId { get; set; }
-		public virtual TillageModel TillageType { get; set; }
-		public List<WorkModel> Works { get; set; }
+		public string Note { get; set; } 
 	}
 }

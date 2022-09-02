@@ -1,17 +1,11 @@
 ﻿@model Models.Dtos.RoleDto;
-@{
-    var message = ViewData["Message"] as string;
-}
 
 <section class="w-50">
 	<div class="container py-5 h-100">
 		<div class="row d-flex align-items-center justify-content-center h-100">
 			<div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
 				<h1 class="text-light">Create Role</h1>
-				@if (!string.IsNullOrWhiteSpace(message))
-    {
-        <h5 class="text-danger" style="padding: 10px; margin-left: 30px;">@message</h5>
-    }
+
 				<form method="post" action="/role">
 					<div class="text-danger" asp-validation-summary="ModelOnly"></div>
 					<div class="form-outline mb-4">

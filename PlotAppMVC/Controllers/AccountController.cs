@@ -35,10 +35,10 @@ namespace PlotAppMVC.Controllers
 
             if (result)
             {
-                ViewData["Message"] = "User Created";
+                TempData["Success"] = "User Created";
                 return Redirect("/");
             }
-            ViewData["Message"] = "Registration failed";
+            TempData["Error"] = "Registration failed";
             return View(dto);
         }
 
@@ -60,10 +60,10 @@ namespace PlotAppMVC.Controllers
 
             if (result)
             {
-                ViewData["Message"] = "Logged successfully";
+                TempData["Success"] = "Logged successfully";
                 return Redirect("/");
             }
-            ViewData["Message"] = "Email or password incorrect";
+            TempData["Error"] = "Email or password incorrect";
             return View(dto);
         }
 
@@ -94,10 +94,10 @@ namespace PlotAppMVC.Controllers
 
             if (result)
             {
-                ViewData["Message"] = "Role Created";
+                TempData["Success"] = "Role Created";
                 return Redirect("/");
             }
-            ViewData["Message"] = "Creating role failed";
+            TempData["Error"] = "Creating role failed";
             return View(dto);
         }
 
@@ -139,11 +139,11 @@ namespace PlotAppMVC.Controllers
 
             if(userUpdated is not null)
             {
-                ViewData["message"] = "User Updated Successfully";
+                TempData["Success"] = "User Updated Successfully";
             }
             else
             {
-                ViewData["message"] = "User Update Failed";
+                TempData["Error"] = "User Update Failed";
             }
 
             ViewData["roles"] = _accountService.GetRoles().Result;
@@ -173,11 +173,11 @@ namespace PlotAppMVC.Controllers
 
             if (result)
             {
-                ViewData["Message"] = "User Deleted";
+                TempData["Success"] = "User Deleted";
             }
             else
             {
-                ViewData["Message"] = "User delete failed";
+                TempData["Error"] = "User delete failed";
             }
 
             return Redirect("/users");

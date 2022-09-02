@@ -2,6 +2,7 @@
 using Models.Entities;
 using NLog.Web;
 using Services;
+using Services.ApiFiles;
 
 namespace PlotAppMVC
 {
@@ -28,7 +29,7 @@ namespace PlotAppMVC
             builder.Services.AddTransient<IAccountService, AccountService>();
             builder.Services.AddTransient<IPlotService, PlotService>();
             builder.Services.AddTransient<IRoleService, RoleService>();
-
+            builder.Services.AddTransient<IPlotProcessor, PlotProcessor>();
         }
     }
 }

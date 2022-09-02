@@ -1,16 +1,9 @@
 ﻿@{
     var users = ViewData["users"] as List<UserModel>;
     var roles = ViewData["roles"] as List<RoleModel>;
-    var message = ViewData["message"] as string;
 }
 
 <div class="container">
-    @if(message is not null)
-    {
-    <h3 class="text-light">@message</h3>
-        
-    }
-    
         <div class="table-wrapper">
             <table class="table table-bordered table-light">
                 <thead>

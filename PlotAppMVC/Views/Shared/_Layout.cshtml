@@ -8,7 +8,7 @@
     <link 
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css" 
   rel="stylesheet"  type='text/css'>
-
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PlotAppMVC.styles.css" asp-append-version="true" />
@@ -77,6 +77,7 @@
     </header>
     <section class="bg-dark d-flex justify-content-center align-items-center"  style="height: 100%;">
             <main role="main" class="d-flex justify-content-center align-items-centers w-100">
+    <partial name="_Notification" />
                 @RenderBody()
             </main>
     </section>

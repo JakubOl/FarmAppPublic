@@ -1,7 +1,6 @@
 ﻿@model Models.Dtos.PlotDto;
 @{
     ViewData["Title"] = "Home Page";
-    var message = ViewData["Message"] as string;
     var plots = ViewData["plots"] as List<PlotModel>;
 }
 <script>
@@ -122,9 +121,6 @@ function showForm() {
 			        </div>
 		        </div>
 	        </nav>
-            @if(message is not null){
-        <div><h4 class="text-danger">@message</h4></div>
-    }
             <form class="form-inline d-flex">
             <input id="searchText" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
             <button type="button" id="searchButton" class="btn btn-outline-success my-2 my-sm-0">Search</button>

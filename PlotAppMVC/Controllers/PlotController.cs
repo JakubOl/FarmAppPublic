@@ -15,10 +15,12 @@ namespace PlotAppMVC.Controllers
     public class PlotController : Controller
     {
         private readonly IPlotService _plotService;
+        private readonly IPlotProcessor _plotProcessor;
 
-        public PlotController(IPlotService plotService)
+        public PlotController(IPlotService plotService, IPlotProcessor plotProcessor)
         {
             _plotService = plotService;
+            _plotProcessor = plotProcessor;
         }
 
         [AllowAnonymous]
@@ -43,14 +45,14 @@ namespace PlotAppMVC.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewData["message"] = "Invalid input";
+                TempData["Error"] = "Invalid input";
                 return View("Index", model);
             }
 
-            var plotCoordinates = await PlotProcessor.LoadPlot(model.City, model.PlotNumber);
+            var plotCoordinates = await _plotProcessor.LoadPlot(model.City, model.PlotNumber);
 
             if(plotCoordinates is null) {
-                ViewData["message"] = "Plot not found";
+                TempData["Error"] = "Plot not found";
                 return View("Index", model);
             }
 
@@ -70,6 +72,7 @@ namespace PlotAppMVC.Controllers
 
             await _plotService.CreatePlot(plot, userId);
 
+            TempData["Success"] = "Plot Added";
             return Redirect("/");
         }
 
@@ -79,6 +82,9 @@ namespace PlotAppMVC.Controllers
             var userId = User.Identity.GetUserId();
 
             await _plotService.DeletePlot(id, userId);
+
+            TempData["Success"] = "Plot Deleted Successfully";
+
             return Redirect("/");
         }
 
@@ -105,11 +111,11 @@ namespace PlotAppMVC.Controllers
 
             if (plotUpdated)
             {
-                ViewData["message"] = "Plot Updated Successfully";
+                TempData["Success"] = "Plot Updated Successfully";
                 return View("Index");
             }
 
-            ViewData["message"] = "Plot Update Failed";
+            TempData["Error"] = "Plot Update Failed";
             return View(model);
         }
 

@@ -11,11 +11,7 @@ namespace DataAccess
         string PlotCollectionName { get; }
         IMongoCollection<RoleModel> RoleCollection { get; }
         string RoleCollectionName { get; }
-        IMongoCollection<TillageModel> TillageCollection { get; }
-        string TillageCollectionName { get; }
         IMongoCollection<UserModel> UserCollection { get; }
         string UserCollectionName { get; }
-        IMongoCollection<WorkModel> WorkCollection { get; }
-        string WorkCollectionName { get; }
     }
 }

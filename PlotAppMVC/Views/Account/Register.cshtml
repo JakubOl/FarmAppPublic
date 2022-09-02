@@ -1,9 +1,5 @@
 ﻿@model Models.Dtos.RegisterUserDto;
 
-@{
-    var message = ViewData["Message"] as string;
-}
-
 <section class="h-100 d-flex">
   <div class="container h-100">
     <div class="row d-flex justify-content-center h-100">
@@ -13,10 +9,6 @@
             <div class="row justify-content-center">
               <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
 
-                  @if (!string.IsNullOrWhiteSpace(message))
-    {
-        <h5 class="text-danger" style="padding: 10px; margin-left: 30px;">@message</h5>
-    }
                 <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign up</p>
                      <form method="post" action="/register">
 					<div class="text-danger" asp-validation-summary="ModelOnly"></div>

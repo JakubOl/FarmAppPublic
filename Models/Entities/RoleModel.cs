@@ -4,7 +4,6 @@ namespace Models.Entities
 {
 	public class RoleModel : MongoIdentityRole<Guid>
 	{
-
 		public string RoleName { get; set; }
 	}
 }

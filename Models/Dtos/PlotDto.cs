@@ -22,6 +22,6 @@ namespace Models.Dtos
 		ErrorMessage = "Characters are not allowed.")]
 		public string Area { get; set; }
 		public string Tillage { get; set; }
-		public List<WorkModel> Works { get; set; }
+		public string Note { get; set; }
 	}
 }

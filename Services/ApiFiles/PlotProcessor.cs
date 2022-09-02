@@ -1,12 +1,18 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 
 namespace Services.ApiFiles
 {
-    public class PlotProcessor
+    public class PlotProcessor : IPlotProcessor
     {
-        public static async Task<decimal[]> LoadPlot(string city, string plotNumber)
+        private readonly IConfiguration _config;
+        public PlotProcessor(IConfiguration config)
         {
-            string apiKey = "8ae9a43f-ff83-4868-a80b-dcabe94f2d90";
+            _config = config;
+        }
+        public async Task<decimal[]> LoadPlot(string city, string plotNumber)
+        {
+            string apiKey = _config.GetValue<string>("ApiKey");
             string url = $"https://plot.search.api.ongeo.pl/1.0/autocomplete/?api_key={apiKey}&query={city}%20{plotNumber}";
 
             try
