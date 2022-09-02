@@ -17,6 +17,7 @@
 	  <PackageReference Include="Microsoft.AspNet.Identity.Core" Version="2.2.3" />
 	  <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="6.0.8" />
 	  <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.8" />
+	  <PackageReference Include="NLog.Web.AspNetCore" Version="5.1.4" />
 	  <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.0" />
 	  <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
 

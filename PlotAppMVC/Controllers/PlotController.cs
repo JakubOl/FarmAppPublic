@@ -7,6 +7,7 @@ using Services.ApiFiles;
 using Microsoft.AspNetCore.Authorization;
 using MongoDB.Bson;
 using Models.Dtos;
+using System.Diagnostics;
 
 namespace PlotAppMVC.Controllers
 {
@@ -110,6 +111,13 @@ namespace PlotAppMVC.Controllers
 
             ViewData["message"] = "Plot Update Failed";
             return View(model);
+        }
+
+        [Route("/Error")]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

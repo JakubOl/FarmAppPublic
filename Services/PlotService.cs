@@ -10,7 +10,6 @@ namespace Services
         private readonly IMemoryCache _cache;
         private readonly UserManager<UserModel> _user;
         private readonly IMongoCollection<PlotModel> _plots;
-        private const string CacheName = "PlotData";
 
         public PlotService(IDbConnection db, IMemoryCache cache, UserManager<UserModel> user)
         {

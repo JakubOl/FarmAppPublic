@@ -1,5 +1,6 @@
 ﻿using DataAccess;
 using Models.Entities;
+using NLog.Web;
 using Services;
 
 namespace PlotAppMVC
@@ -11,6 +12,9 @@ namespace PlotAppMVC
         {
 
             builder.Services.AddControllersWithViews();
+
+            builder.Logging.ClearProviders();
+            builder.Host.UseNLog();
 
             builder.Services.AddMemoryCache();
 
