@@ -79,6 +79,10 @@ namespace PlotAppMVC.Controllers
         [Authorize(Roles = "Admin,Owner")]
         public ActionResult Role()
         {
+            var result = _roleService.GetAllRoles();
+
+            ViewData["roles"] = result;
+
             return View();
         }
 
@@ -92,13 +96,35 @@ namespace PlotAppMVC.Controllers
             }
             var result = await _roleService.CreateRole(dto);
 
+            var roles = _roleService.GetAllRoles();
+
+            ViewData["roles"] = roles;
+
             if (result)
             {
                 TempData["Success"] = "Role Created";
-                return Redirect("/");
+                return View();
             }
             TempData["Error"] = "Creating role failed";
             return View(dto);
+        }
+
+        [HttpPost("/role/{roleId}")]
+        public async Task<ActionResult> DeleteRole([FromRoute] string roleId)
+        {
+            var result = await _roleService.DeleteRoleById(roleId);
+
+            var roles = _roleService.GetAllRoles();
+
+            ViewData["roles"] = roles;
+
+            if (result)
+            {
+                TempData["Success"] = "Role Deleted";
+                return View("Role");
+            }
+            TempData["Error"] = "Deleting role failed";
+            return View("Role");
         }
 
         [HttpGet("/profile/{userId}")]
@@ -116,7 +142,7 @@ namespace PlotAppMVC.Controllers
 
             if (user is null) return View("/Views/NotFound.cshtml");
 
-            ViewData["roles"] = _accountService.GetRoles().Result;
+            ViewData["roles"] = _accountService.GetRoles();
 
             return View(user);
         }
@@ -146,26 +172,45 @@ namespace PlotAppMVC.Controllers
                 TempData["Error"] = "User Update Failed";
             }
 
-            ViewData["roles"] = _accountService.GetRoles().Result;
+            ViewData["roles"] = _accountService.GetRoles();
 
             return View(userUpdated);
         }
 
         [HttpGet("users")]
         [Authorize(Roles = "Owner")]
-        public ActionResult Users()
+        public ActionResult Users([FromQuery] UsersQuery query)
         {
-            var currentUser = User?.Identity?.GetUserId();
-            var users = _accountService.GetAllUsers().Where(u => u.Id.ToString() != currentUser).ToList();
+            var users = _accountService
+                .GetAllUsers(query);
 
-            var roles = _accountService.GetRoles().Result;
+            var roles = _accountService.GetRoles();
 
-            ViewData["roles"] = roles;
-            ViewData["users"] = users;
+            if(users is not null && roles is not null)
+            {
+                ViewData["roles"] = roles;
+                ViewData["users"] = users;
+            }
             return View();
         }
 
-        [HttpPost("users/{userId}/delete")]
+        [HttpGet("users/{userId}/delete")]
+        [Authorize(Roles = "Owner")]
+        public ActionResult ConfirmDeleteUser([FromRoute] string userId)
+        {
+            var user = _accountService.GetUserById(userId);
+
+            if (user is not null)
+            {
+                ViewData["user"] = user;
+                return View();
+            }
+
+            TempData["Error"] = "User not found";
+            return Redirect("/users");
+        }
+
+        [HttpPost("users/{userId}/delete/confirmed")]
         [Authorize(Roles = "Owner")]
         public async Task<ActionResult> DeleteUser([FromRoute] string userId)
         {

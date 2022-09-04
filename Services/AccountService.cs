@@ -74,10 +74,37 @@ namespace Services
             await _signInManager.SignOutAsync();
         }
 
-        public List<UserModel> GetAllUsers()
+        public PagedResult<UserModel> GetAllUsers(UsersQuery query)
         {
             var users = _userManager.Users.ToList();
-            return users;
+
+            if (!string.IsNullOrWhiteSpace(query.SearchPhrase))
+            {
+                users = users.Where(u => u.FirstName.Contains(query.SearchPhrase, StringComparison.OrdinalIgnoreCase)
+           || u.LastName.Contains(query.SearchPhrase, StringComparison.OrdinalIgnoreCase)
+           || u.Email.Contains(query.SearchPhrase, StringComparison.OrdinalIgnoreCase)
+           )
+               .ToList();
+            }
+
+            if (query.PageNumber < 1)
+            {
+                query.PageNumber = (int)Math.Ceiling(users.Count / (double)query.PageSize);
+            }
+
+            if (query.PageNumber > (int)Math.Ceiling(users.Count / (double)query.PageSize))
+            {
+                query.PageNumber = 1;
+            }
+
+            
+            var pagedResult = users.Skip((query.PageNumber - 1) * query.PageSize).Take(query.PageSize).ToList();   
+
+            var totalItems = users.Count;
+
+            var result = new PagedResult<UserModel>(pagedResult, totalItems, query.PageSize, query.PageNumber);
+
+            return result;
         }
 
         public async Task<UserModel> GetUserById(string id)
@@ -126,7 +153,7 @@ namespace Services
             }
         }
 
-        public async Task<List<RoleModel>> GetRoles()
+        public List<RoleModel> GetRoles()
         {
             var results = _roles.Roles.ToList();
             return results;

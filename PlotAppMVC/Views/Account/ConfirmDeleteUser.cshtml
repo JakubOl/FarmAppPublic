@@ -2,17 +2,17 @@
     var user = ViewData["user"] as UserModel;
 }
 
-<div id="id01" class="modal">
-  <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
-  <form class="modal-content" action="/users/@user.Id/delete/confirmed">
-    <div class="container">
+<div class="m-5">
+  <form class="text-dark bg-light p-3 card" action="/users/@user.Id/delete/confirmed" method="post">
+    <div class="container d-flex flex-column justify-content-center align-items-center">
       <h1>Delete Account</h1>
       <p>Are you sure you want to delete user: @user.Email</p>
 
       <div class="clearfix">
-        <a href="/" class="cancelbtn">Cancel</a>
-        <button type="submit" class="deletebtn">Delete</button>
+        <a href="/users" class="btn btn-primary">Cancel</a>
+        <button type="submit" class="btn btn-danger">Delete</button>
       </div>
     </div>
   </form>
 </div>
+ 

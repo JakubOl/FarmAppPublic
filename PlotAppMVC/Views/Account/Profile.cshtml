@@ -79,6 +79,7 @@
                         <div class="col-md-6">
                         <label class="labels">New Role: </label>
                             <select class="form-select" aria-label="Roles" name="Role">
+                                <option value=""></option>
                             @foreach(var role in roles)
                             {
                                 <option value="@role.Id">@role.Name</option>
