@@ -35,11 +35,17 @@
                         <td>@user?.Country</td>
                         <td>@user.CreatedDate</td>
                         <td>@user.PlotsIds?.Count()</td>
-                        <td>@roles?.FirstOrDefault(r => r.Id == user?.Roles[0])?.Name</td>
+                        @if(user.Roles.Count == 2){
+                                                    <td>@roles?.FirstOrDefault(r => r.Id == user?.Roles[1])?.Name</td>
+                        }
+                        else
+                        {
+                                                    <td>@roles?.FirstOrDefault(r => r.Id == user?.Roles[0])?.Name</td>
+                        }
     
                         <td class="d-flex justify-content-around">
                             <a href="/profile/@user.Id" class="edit" title="Edit" data-toggle="tooltip"><i class="fa fa-solid fa-edit"></i></a>
-                            <a href="/result/@user.Id/delete" class="delete" title="Delete" data-toggle="tooltip"><i class="fa fa-solid fa-trash"></i></a>
+                            <a href="/users/@user.Id/delete" class="delete" title="Delete" data-toggle="tooltip"><i class="fa fa-solid fa-trash"></i></a>
                         </td>
                     </tr>
                 }

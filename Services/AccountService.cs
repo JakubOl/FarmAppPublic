@@ -128,7 +128,14 @@ namespace Services
             if(userDto.Role is not null)
             {
                 var roleGuid = new Guid(userDto.Role);
-                user.Roles[0] = roleGuid;
+                if(user.Roles.Count != 2)
+                {
+                    user.Roles.Add(roleGuid);
+                }
+                else
+                {
+                    user.Roles[1] = roleGuid;
+                }
             }
 
             await _userManager.UpdateAsync(user);

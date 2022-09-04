@@ -71,8 +71,15 @@
 
                       <div class="col-md-6">
                         <label class="labels">Current Role: </label>
-                            <div type="text" class="form-control">@roles.FirstOrDefault(r => r.Id == Model?.Roles[0])?.Name</div>
-                        </div>
+
+                        @if(Model?.Roles?.Count == 2){
+                            <div type="text" class="form-control">@(roles.FirstOrDefault(r => r.Id == Model?.Roles[1])?.Name)</div>
+                        }
+                        else
+                        {
+                            <div type="text" class="form-control">@(roles.FirstOrDefault(r => r.Id == Model?.Roles[0])?.Name)</div>
+                        }
+                    </div>
 
                     @if(User?.IsInRole("Owner") == true)
                     {
