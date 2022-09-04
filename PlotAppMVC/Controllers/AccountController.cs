@@ -80,7 +80,6 @@ namespace PlotAppMVC.Controllers
         public ActionResult Role()
         {
             var result = _roleService.GetAllRoles();
-
             ViewData["roles"] = result;
 
             return View();
@@ -94,10 +93,10 @@ namespace PlotAppMVC.Controllers
             {
                 return View(dto);
             }
+
             var result = await _roleService.CreateRole(dto);
 
             var roles = _roleService.GetAllRoles();
-
             ViewData["roles"] = roles;
 
             if (result)
@@ -115,7 +114,6 @@ namespace PlotAppMVC.Controllers
             var result = await _roleService.DeleteRoleById(roleId);
 
             var roles = _roleService.GetAllRoles();
-
             ViewData["roles"] = roles;
 
             if (result)
@@ -123,6 +121,7 @@ namespace PlotAppMVC.Controllers
                 TempData["Success"] = "Role Deleted";
                 return View("Role");
             }
+
             TempData["Error"] = "Deleting role failed";
             return View("Role");
         }
@@ -139,7 +138,6 @@ namespace PlotAppMVC.Controllers
             if (userId is null) return View("/Views/NotFound.cshtml");
 
             var user = await _accountService.GetUserById(userId);
-
             if (user is null) return View("/Views/NotFound.cshtml");
 
             ViewData["roles"] = _accountService.GetRoles();

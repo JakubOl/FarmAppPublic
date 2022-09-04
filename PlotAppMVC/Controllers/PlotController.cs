@@ -15,12 +15,10 @@ namespace PlotAppMVC.Controllers
     public class PlotController : Controller
     {
         private readonly IPlotService _plotService;
-        private readonly IPlotProcessor _plotProcessor;
 
-        public PlotController(IPlotService plotService, IPlotProcessor plotProcessor)
+        public PlotController(IPlotService plotService)
         {
             _plotService = plotService;
-            _plotProcessor = plotProcessor;
         }
 
         [AllowAnonymous]
@@ -36,7 +34,6 @@ namespace PlotAppMVC.Controllers
             var userId = User.Identity.GetUserId();
             var plots = await _plotService.GetUsersPlots(userId, searchText);
 
-            if (plots is null) return new List<PlotModel>();
             return plots;
         }
 
@@ -49,30 +46,19 @@ namespace PlotAppMVC.Controllers
                 return View("Index", model);
             }
 
-            var plotCoordinates = await _plotProcessor.LoadPlot(model.City, model.PlotNumber);
-
-            if(plotCoordinates is null) {
-                TempData["Error"] = "Plot not found";
-                return View("Index", model);
-            }
-
-            var plot = new PlotModel()
-            {
-                Area = model.Area,
-                PlotNumber = model.PlotNumber,
-                City = model.City,
-                Tillage = model.Tillage,
-                Latitude = plotCoordinates[0],
-                Longitude = plotCoordinates[1]
-            };
-
-            
-
             var userId = User.Identity.GetUserId();
 
-            await _plotService.CreatePlot(plot, userId);
+            var result = await _plotService.CreatePlot(model, userId);
 
-            TempData["Success"] = "Plot Added";
+            if (result)
+            {
+                TempData["Success"] = "Plot Added";
+            }
+            else
+            {
+                TempData["Error"] = "Plot not found";
+            }
+
             return Redirect("/");
         }
 
@@ -81,7 +67,7 @@ namespace PlotAppMVC.Controllers
         {
             var userId = User.Identity.GetUserId();
 
-            await _plotService.DeletePlot(id, userId);
+            var result = await _plotService.DeletePlot(id, userId);
 
             TempData["Success"] = "Plot Deleted Successfully";
 
@@ -100,6 +86,7 @@ namespace PlotAppMVC.Controllers
         public async Task<ActionResult> EditPlot([FromRoute] string id, [FromForm] PlotModel model)
         {
             model.Id = id;
+
             if (!ModelState.IsValid)
             {
                 return View(model);
