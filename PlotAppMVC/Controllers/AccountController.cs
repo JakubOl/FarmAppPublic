@@ -177,10 +177,9 @@ namespace PlotAppMVC.Controllers
 
         [HttpGet("users")]
         [Authorize(Roles = "Owner")]
-        public ActionResult Users([FromQuery] UsersQuery query)
+        public ActionResult Users([FromQuery] Query query)
         {
-            var users = _accountService
-                .GetAllUsers(query);
+            var users = _accountService.GetAllUsers(query);
 
             var roles = _accountService.GetRoles();
 

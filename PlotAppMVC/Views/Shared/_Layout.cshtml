@@ -40,11 +40,25 @@
                             <li class="nav-item">
                             <a class="nav-link text-light" href="/profile/@User.Identity.GetUserId()">Profile</a>
                             </li>
+                            <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Auction" asp-action="Index">Auctions</a>
+                            </li>
+                            <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Auction" asp-action="UserAuctions">My Auctions</a>
+                            </li>
+                            <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Auction" asp-action="Create">Create Auction</a>
+                            </li>
+                            
+
                             @if (User.IsInRole("Owner"))
                             {
 
                                 <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="Account" asp-action="Role">Roles</a>
+                            </li>
+                            <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Auction" asp-action="Types">Auction Types</a>
                             </li>
                             <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="Account" asp-action="Users">Manage Users</a>
@@ -76,8 +90,8 @@
             </div>
         </nav>
     </header>
-    <section class="bg-dark d-flex justify-content-center align-items-center"  style="height: 100%;">
-            <main role="main" class="d-flex justify-content-center align-items-centers w-100">
+    <section class="bg-dark d-flex justify-content-center align-items-center"  style="height: 80vh;">
+            <main role="main" class="d-flex justify-content-center align-items-centers w-100 h-100">
     <partial name="_Notification" />
                 @RenderBody()
             </main>

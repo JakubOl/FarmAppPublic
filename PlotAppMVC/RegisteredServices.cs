@@ -30,6 +30,8 @@ namespace PlotAppMVC
             builder.Services.AddTransient<IPlotService, PlotService>();
             builder.Services.AddTransient<IRoleService, RoleService>();
             builder.Services.AddTransient<IPlotProcessor, PlotProcessor>();
+            builder.Services.AddTransient<IAuctionService, AuctionService>();
+
         }
     }
 }

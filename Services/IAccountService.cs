@@ -9,7 +9,7 @@ namespace Services
         Task<bool> Register(RegisterUserDto dto);
         Task<UserModel> GetUserById(string id);
         Task<UserModel> UpdateUser(UserModel model, string id);
-        PagedResult<UserModel> GetAllUsers(UsersQuery query);
+        PagedResult<UserModel> GetAllUsers(Query query);
         Task<bool> DeleteUser(string userId);
         List<RoleModel> GetRoles();
     }

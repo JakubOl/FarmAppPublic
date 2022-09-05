@@ -54,8 +54,9 @@ namespace Services
         {
             
             UserModel appUser = await _userManager.FindByEmailAsync(dto.Email);
-            //if (dto.Email == "jakub@jakub.com" && appUser.Roles.Count == 1)
+            //if (dto.Email == "jakub1@jakub.com")
             //{
+            //    appUser.Roles.RemoveAt(1);
             //    await _userManager.AddToRoleAsync(appUser, "Owner");
             //}
             if (appUser is not null)
@@ -74,10 +75,10 @@ namespace Services
             await _signInManager.SignOutAsync();
         }
 
-        public PagedResult<UserModel> GetAllUsers(UsersQuery query)
+        public PagedResult<UserModel> GetAllUsers(Query query)
         {
             var users = _userManager.Users.ToList();
-
+            
             if (!string.IsNullOrWhiteSpace(query.SearchPhrase))
             {
                 users = users.Where(u => u.FirstName.Contains(query.SearchPhrase, StringComparison.OrdinalIgnoreCase)

@@ -13,5 +13,11 @@ namespace DataAccess
         string RoleCollectionName { get; }
         IMongoCollection<UserModel> UserCollection { get; }
         string UserCollectionName { get; }
+        IMongoCollection<ItemModel> AuctionCollection { get; }
+        string AuctionCollectionName { get; }
+        IMongoCollection<TypeModel> TypeCollection { get; }
+        string TypeCollectionName { get; }
+        IMongoCollection<CommentModel> CommentCollection { get; }
+        string CommentCollectionName { get; }
     }
 }

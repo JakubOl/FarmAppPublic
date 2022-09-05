@@ -75,10 +75,10 @@ namespace Services
 
             var result = await _plots.ReplaceOneAsync(p => p.Id == plotId, plotEntity);
 
-            _cache.Remove(userId);
 
             if(result.ModifiedCount > 0)
             {
+                _cache.Remove(userId);
                 return true;
             }
             return false;

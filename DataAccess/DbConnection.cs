@@ -13,11 +13,19 @@ public class DbConnection : IDbConnection
     public string PlotCollectionName { get; private set; } = "plots";
     public string RoleCollectionName { get; private set; } = "roleModels";
     public string UserCollectionName { get; private set; } = "userModels";
+    public string AuctionCollectionName { get; private set; } = "auctions";
+    public string CommentCollectionName { get; private set; } = "comments";
+    public string TypeCollectionName { get; private set; } = "types";
+
 
     public MongoClient Client { get; private set; }
     public IMongoCollection<PlotModel> PlotCollection { get; private set; }
     public IMongoCollection<RoleModel> RoleCollection { get; private set; }
     public IMongoCollection<UserModel> UserCollection { get; private set; }
+    public IMongoCollection<ItemModel> AuctionCollection { get; private set; }
+    public IMongoCollection<CommentModel> CommentCollection { get; private set; }
+    public IMongoCollection<TypeModel> TypeCollection { get; private set; }
+
 
 
     public DbConnection(IConfiguration config)
@@ -28,9 +36,12 @@ public class DbConnection : IDbConnection
         _db = Client.GetDatabase(DbName);
 
 
-
         PlotCollection = _db.GetCollection<PlotModel>(PlotCollectionName);
         RoleCollection = _db.GetCollection<RoleModel>(RoleCollectionName);
         UserCollection = _db.GetCollection<UserModel>(UserCollectionName);
+        AuctionCollection = _db.GetCollection<ItemModel>(AuctionCollectionName);
+        CommentCollection = _db.GetCollection<CommentModel>(CommentCollectionName);
+        TypeCollection = _db.GetCollection<TypeModel>(TypeCollectionName);
+
     }
 }

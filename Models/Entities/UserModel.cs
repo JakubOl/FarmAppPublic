@@ -16,6 +16,8 @@ namespace Models.Entities
 		public string passwordHash { get; set; }
 		public string Role { get; set; }
 		public DateTime CreatedDate { get; set; } = DateTime.Now;
-		public List<string> PlotsIds { get; set; }
+		public List<string> PlotsIds { get; set; } = new List<string>();
+		public List<string> Auctions { get; set; } = new List<string>();
+		public List<string> Comments { get; set; } = new List<string>();
 	}
 }

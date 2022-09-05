@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Models.Dtos
 {
-    public class UsersQuery
+    public class Query
     {
         public string SearchPhrase { get; set; } = string.Empty;
         public int PageNumber { get; set; } = 1;
