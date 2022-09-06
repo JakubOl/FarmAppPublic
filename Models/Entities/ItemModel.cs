@@ -18,8 +18,8 @@ namespace Models.Entities
 		public string AuthorId { get; set; }
 		public bool IsActive { get; set; } = false;
 		public string TypeId { get; set; }
-		public virtual TypeModel Type { get; set; }
-		public List<string> Comments { get; set; } = new List<string>();
+		public virtual CategoryModel Type { get; set; }
+		public List<TagModel> Comments { get; set; } = new List<TagModel>();
 		public int Likes { get; set; }
 	}
 }

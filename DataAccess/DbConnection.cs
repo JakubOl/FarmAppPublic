@@ -24,7 +24,7 @@ public class DbConnection : IDbConnection
     public IMongoCollection<UserModel> UserCollection { get; private set; }
     public IMongoCollection<ItemModel> AuctionCollection { get; private set; }
     public IMongoCollection<CommentModel> CommentCollection { get; private set; }
-    public IMongoCollection<TypeModel> TypeCollection { get; private set; }
+    public IMongoCollection<CategoryModel> TypeCollection { get; private set; }
 
 
 
@@ -41,7 +41,7 @@ public class DbConnection : IDbConnection
         UserCollection = _db.GetCollection<UserModel>(UserCollectionName);
         AuctionCollection = _db.GetCollection<ItemModel>(AuctionCollectionName);
         CommentCollection = _db.GetCollection<CommentModel>(CommentCollectionName);
-        TypeCollection = _db.GetCollection<TypeModel>(TypeCollectionName);
+        TypeCollection = _db.GetCollection<CategoryModel>(TypeCollectionName);
 
     }
 }

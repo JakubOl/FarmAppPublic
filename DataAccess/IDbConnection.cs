@@ -15,7 +15,7 @@ namespace DataAccess
         string UserCollectionName { get; }
         IMongoCollection<ItemModel> AuctionCollection { get; }
         string AuctionCollectionName { get; }
-        IMongoCollection<TypeModel> TypeCollection { get; }
+        IMongoCollection<CategoryModel> TypeCollection { get; }
         string TypeCollectionName { get; }
         IMongoCollection<CommentModel> CommentCollection { get; }
         string CommentCollectionName { get; }

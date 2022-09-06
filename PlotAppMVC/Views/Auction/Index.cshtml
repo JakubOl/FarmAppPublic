@@ -28,8 +28,7 @@
                             @foreach (var item in result.Items)
                             {
 
-
-                                <tr>
+                                <tr onclick="window.location='/auction/@item.Id/details';">
                                     <td>@item.Title</td>
                                     <td>@item.Type?.Name</td>
                                     <td>@item.Created</td>
@@ -68,3 +67,9 @@
     </div> 
 
 </section>
+
+<style>
+    tr{
+        cursor: pointer;
+    }
+</style>

@@ -8,8 +8,8 @@ namespace Services
         PagedResult<ItemModel> GetAuctions(Query query, string userId = "");
         ItemModel GetAuction(string auctionId);
         Task<bool> UpdateAuction(string auctionId, ItemDto dto, string userId);
-        List<TypeModel> GetAllTypes();
-        Task<bool> CreateType(TypeModel type);
+        List<CategoryModel> GetAllTypes();
+        Task<bool> CreateType(CategoryModel type);
         Task<bool> DeleteType(string typeId);
     }
 }

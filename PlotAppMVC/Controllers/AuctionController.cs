@@ -13,11 +13,13 @@ namespace PlotAppMVC.Controllers
     public class AuctionController : Controller
     {
         private readonly IAuctionService _auctionService;
+        private readonly IAccountService _accountService;
         private readonly IMapper _mapper;
 
-        public AuctionController(IAuctionService auctionService, IMapper mapper)
+        public AuctionController(IAuctionService auctionService, IAccountService accountService, IMapper mapper)
         {
             _auctionService = auctionService;
+            _accountService = accountService;
             _mapper = mapper;
         }
 
@@ -41,10 +43,16 @@ namespace PlotAppMVC.Controllers
             return View("UserAuctions");
         }
 
-        // GET: AuctionController/Details/5
-        public ActionResult Details(int id)
+        [HttpGet("/auction/{auctionId}/details")]
+        public async Task<ActionResult> Details(string auctionId)
         {
-            return View();
+            var result = _auctionService.GetAuction(auctionId);
+
+            var userId = User?.Identity?.GetUserId();
+            var user = await _accountService.GetUserById(userId);
+
+            ViewData["user"] = user;
+            return View(result);
         }
 
         [HttpGet("/auction/create")]
@@ -161,7 +169,7 @@ namespace PlotAppMVC.Controllers
         }
 
         [HttpPost("/auction/type/create")]
-        public async Task<ActionResult> CreateType([FromForm] TypeModel type)
+        public async Task<ActionResult> CreateType([FromForm] CategoryModel type)
         {
             var result = _auctionService.GetAllTypes();
             ViewData["types"] = result;

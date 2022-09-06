@@ -5,7 +5,7 @@ namespace Services
     public class AuctionService : IAuctionService
     {
         private readonly IDbConnection _db;
-        private IMongoCollection<TypeModel> _types;
+        private IMongoCollection<CategoryModel> _types;
         private IMongoCollection<ItemModel> _auctions;
         private readonly UserManager<UserModel> _user;
 
@@ -30,7 +30,8 @@ namespace Services
             if (!string.IsNullOrWhiteSpace(query.SearchPhrase))
             {
                 results = results.Where(r => r.Description.Contains(query.SearchPhrase, StringComparison.OrdinalIgnoreCase)
-                || r.Title.Contains(query.SearchPhrase, StringComparison.OrdinalIgnoreCase))
+                || r.Title.Contains(query.SearchPhrase, StringComparison.OrdinalIgnoreCase)
+                || r.Type.Name.Contains(query.SearchPhrase, StringComparison.OrdinalIgnoreCase))
                .ToList();
             }
 
@@ -153,13 +154,13 @@ namespace Services
             return false;
         }
 
-        public List<TypeModel> GetAllTypes()
+        public List<CategoryModel> GetAllTypes()
         {
             var results = _types.Find(_ => true);
             return results.ToList();
         }
 
-        public async Task<bool> CreateType(TypeModel type)
+        public async Task<bool> CreateType(CategoryModel type)
         {
             var client = _db.Client;
 
@@ -170,7 +171,7 @@ namespace Services
             try
             {
                 var db = client.GetDatabase(_db.DbName);
-                var typeInTransaction = db.GetCollection<TypeModel>(_db.TypeCollectionName);
+                var typeInTransaction = db.GetCollection<CategoryModel>(_db.TypeCollectionName);
                 await typeInTransaction.InsertOneAsync(type);
 
                 //await session.CommitTransactionAsync();
@@ -195,7 +196,7 @@ namespace Services
             try
             {
                 var db = client.GetDatabase(_db.DbName);
-                var typeInTransaction = db.GetCollection<TypeModel>(_db.TypeCollectionName);
+                var typeInTransaction = db.GetCollection<CategoryModel>(_db.TypeCollectionName);
                 await typeInTransaction.DeleteOneAsync(t => t.Id == typeId);
 
                 //await session.CommitTransactionAsync();
