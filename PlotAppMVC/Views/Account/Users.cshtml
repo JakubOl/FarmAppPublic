@@ -5,6 +5,7 @@
 }
 
 <div class="container d-flex flex-column justify-content-between" style="height: 80vh;">
+
         <div class="table-wrapper">
             <table class="table table-bordered table-light">
                 <thead>
@@ -54,9 +55,10 @@
                 </tbody>
             </table>
         </div>
-        <div class="mb-3">@result.ItemsFrom - @if(result.ItemsTo > result.TotalItemsCount){ @result.TotalItemsCount; }else{ @result.ItemsTo; } Total items: @result.TotalItemsCount Items</div>
-    <div class="mb-3">Page: @(result.PageNumber) </div>
-        <nav aria-label="Page navigation example" class="align-self-center">
+        <div class="d-flex flex-column justify-content-center align-items-center">
+        <div class="mb-3 text-light">@result.ItemsFrom - @if(result.ItemsTo > result.TotalItemsCount){ @result.TotalItemsCount; }else{ @result.ItemsTo; } Total items: @result.TotalItemsCount Items</div>
+    <div class="mb-3 text-light">Page: @(result.PageNumber) </div>
+        <nav aria-label="Page navigation example">
   <ul class="pagination">
     <li class="page-item">
       <a class="page-link" href="/users?pageNumber=@(result.PageNumber-1)&pageSize=@result.PageSize" aria-label="Previous">
@@ -78,6 +80,8 @@
   </ul>
 </nav>
     </div>
+    </div>
+
 
     <style>
         td{

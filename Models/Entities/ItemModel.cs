@@ -13,8 +13,7 @@ namespace Models.Entities
 		public string Id { get; set; }
 		public string Title { get; set; }
 		public string Description { get; set; }
-		public DateTime ProductionDate { get; set; }
-		public DateTime Created { get; set; } = new DateTime();
+		public DateTime Created { get; set; } = DateTime.Now;
 		public string Price { get; set; }
 		public string AuthorId { get; set; }
 		public bool IsActive { get; set; } = false;

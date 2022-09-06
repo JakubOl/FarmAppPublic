@@ -15,8 +15,9 @@ namespace Models.Dtos
         public int PageSize { get; set; }
         public int PageNumber { get; set; }
         public int TotalPages { get; set; }
+        public string SearchPhrase { get; set; } = "";
 
-        public PagedResult(List<T> items, int totalCount, int pageSize, int pageNumber)
+        public PagedResult(List<T> items, int totalCount, int pageSize, int pageNumber, string searchPhrase)
         {
             Items = items;
             PageNumber = pageNumber;
@@ -25,6 +26,7 @@ namespace Models.Dtos
             ItemsFrom = pageSize * (pageNumber - 1) + 1;
             ItemsTo = ItemsFrom + pageSize - 1;
             TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+            SearchPhrase = searchPhrase;
         }
 
     }

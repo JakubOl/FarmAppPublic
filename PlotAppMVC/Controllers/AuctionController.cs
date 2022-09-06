@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models.Dtos;
@@ -7,30 +9,33 @@ using Services;
 
 namespace PlotAppMVC.Controllers
 {
+    [Authorize]
     public class AuctionController : Controller
     {
         private readonly IAuctionService _auctionService;
+        private readonly IMapper _mapper;
 
-        public AuctionController(IAuctionService auctionService)
+        public AuctionController(IAuctionService auctionService, IMapper mapper)
         {
             _auctionService = auctionService;
+            _mapper = mapper;
         }
 
         [HttpGet("/auction")]
-        public ActionResult Index()
+        public ActionResult Index([FromQuery] Query query)
         {
-            var auctions = _auctionService.GetAllAuctions();
+            var auctions = _auctionService.GetAuctions(query);
 
             ViewData["auctions"] = auctions;
             return View();
         }
 
         [HttpGet("/auction/user")]
-        public ActionResult UserAuctions()
+        public ActionResult UserAuctions([FromQuery] Query query)
         {
             var userId = User?.Identity?.GetUserId();
 
-            var auctions = _auctionService.GetAllAuctions().Where(a => a.AuthorId == userId).ToList();
+            var auctions = _auctionService.GetAuctions(query, userId);
 
             ViewData["auctions"] = auctions;
             return View("UserAuctions");
@@ -70,32 +75,53 @@ namespace PlotAppMVC.Controllers
             if(auction)
             {
                 TempData["Success"] = "Auction added";
-                return Redirect("/auction");
+                return Redirect("/auction/user");
             }
 
             TempData["Error"] = "Auction creating failed";
             return View(dto);
         }
 
-        // GET: AuctionController/Edit/5
-        public ActionResult Edit(int id)
+        [HttpGet("/auction/{auctionId}/edit")]
+        public ActionResult Edit(string auctionId)
         {
-            return View();
+            var auction = _auctionService.GetAuction(auctionId);
+            if(auction is null)
+            {
+                TempData["Error"] = "Auction not found";
+                return Redirect("/auction");
+            }
+
+            var types = _auctionService.GetAllTypes();
+            ViewData["types"] = types;
+
+            var auctionDto = _mapper.Map<ItemDto>(auction);
+            return View(auctionDto);
         }
 
-        // POST: AuctionController/Edit/5
-        [HttpPost]
+        [HttpPost("/auction/{auctionId}/edit")]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit([FromForm] ItemDto dto, [FromRoute] string auctionId)
         {
-            try
+            dto.Id = auctionId;
+
+            if (!ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                return View(dto);
             }
-            catch
+
+            var userId = User?.Identity?.GetUserId();
+
+            var auctionUpdated = await _auctionService.UpdateAuction(auctionId, dto, userId);
+
+            if (auctionUpdated)
             {
-                return View();
+                TempData["Success"] = "Auction Updated Successfully";
+                return Redirect("/auction/user");
             }
+
+            TempData["Error"] = "Auction Update Failed";
+            return View(dto);
         }
 
         [HttpGet("/auction/{auctionId}/delete")]

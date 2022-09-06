@@ -1,4 +1,5 @@
-﻿using DataAccess;
+﻿using AutoMapper;
+using DataAccess;
 using Models.Entities;
 using NLog.Web;
 using Services;
@@ -11,6 +12,14 @@ namespace PlotAppMVC
 
         public static void ConfigureServices(this WebApplicationBuilder builder)
         {
+
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+
+            IMapper mapper = mapperConfig.CreateMapper();
+            builder.Services.AddSingleton(mapper);
 
             builder.Services.AddControllersWithViews();
 
@@ -31,7 +40,6 @@ namespace PlotAppMVC
             builder.Services.AddTransient<IRoleService, RoleService>();
             builder.Services.AddTransient<IPlotProcessor, PlotProcessor>();
             builder.Services.AddTransient<IAuctionService, AuctionService>();
-
         }
     }
 }

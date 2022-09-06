@@ -18,10 +18,40 @@ namespace Services
             _types = db.TypeCollection;
 
         }
-        public List<ItemModel> GetAllAuctions()
+        public PagedResult<ItemModel> GetAuctions(Query query, string userId = "")
         {
-            var results = _auctions.Find(_ => true);
-            return results.ToList();
+            var results = _auctions.Find(_ => true).ToList();
+
+            if (!string.IsNullOrWhiteSpace(userId))
+            {
+                results = results.Where(a => a.AuthorId == userId).ToList();
+            }   
+
+            if (!string.IsNullOrWhiteSpace(query.SearchPhrase))
+            {
+                results = results.Where(r => r.Description.Contains(query.SearchPhrase, StringComparison.OrdinalIgnoreCase)
+                || r.Title.Contains(query.SearchPhrase, StringComparison.OrdinalIgnoreCase))
+               .ToList();
+            }
+
+            if (query.PageNumber < 1)
+            {
+                query.PageNumber = (int)Math.Ceiling(results.Count / (double)query.PageSize);
+            }
+
+            if (query.PageNumber > (int)Math.Ceiling(results.Count / (double)query.PageSize))
+            {
+                query.PageNumber = 1;
+            }
+
+
+            var pagedResult = results.Skip((query.PageNumber - 1) * query.PageSize).Take(query.PageSize).ToList();
+
+            var totalItems = results.Count;
+
+            var result = new PagedResult<ItemModel>(pagedResult, totalItems, query.PageSize, query.PageNumber, query.SearchPhrase);
+
+            return result;
         }
 
         public ItemModel GetAuction(string auctionId)
@@ -40,7 +70,6 @@ namespace Services
                 Description = dto.Description,
                 IsActive = dto.IsActive,
                 Price = dto.Price,
-                ProductionDate = dto.ProductionDate,
                 Title = dto.Title,
                 TypeId = dto.Type,
             };
@@ -102,6 +131,26 @@ namespace Services
                 //await session.AbortTransactionAsync();
                 return false;
             }
+        }
+
+        public async Task<bool> UpdateAuction(string auctionId, ItemDto dto, string userId)
+        {
+            var auctionEntity = GetAuction(auctionId);
+
+            auctionEntity.Title = dto.Title;
+            auctionEntity.Price = dto.Price;
+            auctionEntity.Description = dto.Description;
+            auctionEntity.IsActive = dto.IsActive;
+            auctionEntity.TypeId = dto.Type;
+            auctionEntity.Type = (await _types.FindAsync(t => t.Id == dto.Type)).FirstOrDefault();
+
+            var result = await _auctions.ReplaceOneAsync(a => a.Id == auctionId, auctionEntity);
+
+            if (result.ModifiedCount > 0)
+            {
+                return true;
+            }
+            return false;
         }
 
         public List<TypeModel> GetAllTypes()

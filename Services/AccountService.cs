@@ -97,13 +97,12 @@ namespace Services
             {
                 query.PageNumber = 1;
             }
-
             
             var pagedResult = users.Skip((query.PageNumber - 1) * query.PageSize).Take(query.PageSize).ToList();   
 
             var totalItems = users.Count;
 
-            var result = new PagedResult<UserModel>(pagedResult, totalItems, query.PageSize, query.PageNumber);
+            var result = new PagedResult<UserModel>(pagedResult, totalItems, query.PageSize, query.PageNumber, query.SearchPhrase);
 
             return result;
         }

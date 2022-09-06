@@ -147,7 +147,7 @@ namespace PlotAppMVC.Controllers
 
         [HttpPost("/profile/{userId}/update")]
         [Authorize]
-        public async Task<ActionResult> Profile([FromForm] UserModel userModel, [FromRoute] string userId)
+        public async Task<ActionResult> UpdateUser([FromForm] UserModel userModel, [FromRoute] string userId)
         {
             if (userId != User?.Identity?.GetUserId() && User?.IsInRole("Owner") == false)
             {
