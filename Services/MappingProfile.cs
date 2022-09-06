@@ -7,7 +7,7 @@ namespace Services
         public MappingProfile()
         {
             CreateMap<ItemDto, ItemModel>();
-            CreateMap<ItemModel, ItemDto>().ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.TypeId));
+            CreateMap<ItemModel, ItemDto>();
         }
     }
 }

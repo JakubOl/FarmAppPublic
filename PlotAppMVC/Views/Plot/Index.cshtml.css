@@ -7,10 +7,7 @@
     display: none;
 }
 
-td, th {
-    text-align: center;
-    cursor: pointer;
-}
+
 
 .plotsList::-webkit-scrollbar {
     display: none;

@@ -17,7 +17,7 @@
                     <thead>
                         <tr>
                             <th scope="col">Title</th>
-                            <th scope="col">Type</th>
+                            <th scope="col">Category</th>
                             <th scope="col">Likes</th>
                             <th scope="col">Comments</th>
                             <th scope="col">Added Date</th>
@@ -33,7 +33,7 @@
                             {
                                 <tr onclick="window.location='/auction/@item.Id/details';">
                                     <td>@item.Title</td>
-                                    <td>@item.Type?.Name</td>
+                                    <td>@item.Category?.Name</td>
                                     <td>@item.Likes</td>
                                     <td>@item.Comments.Count</td>
                                     <td>@item.Created</td>

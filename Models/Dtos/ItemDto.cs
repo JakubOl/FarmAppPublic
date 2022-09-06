@@ -18,6 +18,6 @@ namespace Models.Dtos
 		public string Price { get; set; }
 		public bool IsActive { get; set; } = false;
 		[Required]
-		public string Type { get; set; }
+		public string CategoryId { get; set; }
 	}
 }

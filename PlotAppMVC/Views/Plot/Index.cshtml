@@ -3,93 +3,108 @@
     ViewData["Title"] = "Home Page";
     var plots = ViewData["plots"] as List<PlotModel>;
 }
-    
+
 <section class="container d-flex align-items-center justify-content-center m-2 gap-5 w-100">
 
-    @if (User?.Identity?.IsAuthenticated??false)
- {
-    <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
+    @if (User?.Identity?.IsAuthenticated ?? false)
+    {
+        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
 
-     <div class="d-flex flex-column overflow-hidden" style="height: 800px;">
+            <div class="d-flex flex-column overflow-hidden" style="height: 800px;">
 
-	        <nav class="flex-column plotForm hidden">
-		        <div class="nav-item">
-			        <div >
+                <nav class="flex-column plotForm hidden">
+                    <div class="nav-item">
+                        <div>
 
-				        <form class="" method="post" action="/plot">
-                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <form class="" method="post" action="/plot">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-				        <div class="form-group">
-					        <label for="city" class="text-white">Miejscowość</label>
-					        <input type="text" class="form-control" id="city" placeholder="Kraczkowa" name="City" value="@Model?.City" >
-                            <span asp-validation-for="City" class="text-danger"></span>
-				        </div>
-				        <div class="form-group">
-					        <label for="plotNumber" class="text-white">Numer działki</label>
-					        <input type="text" class="form-control" id="plotNumber" placeholder="3374/16" name="PlotNumber"  value="@Model?.PlotNumber">
-                            <span asp-validation-for="PlotNumber" class="text-danger"></span>
-				        </div>
-				        <div class="form-group">
-					        <label for="area" class="text-white">Powierzchnia (ha)</label>
-					        <input type="text" class="form-control" id="area" placeholder="0.55" name="Area"  value="@Model?.Area">
-                            <span asp-validation-for="Area" class="text-danger"></span>
-				        </div>
-                        <div class="form-group">
-					        <label for="area" class="text-white">Uprawa</label>
-					        <input type="text" class="form-control" id="tillage" placeholder="Pszenica" name="tillage"  value="@Model?.Tillage">
-				        </div>
-				        <button type="submit" class="btn btn-primary my-2 align-self-center w-100" >Dodaj działkę</button>
-				        </form>
-			        </div>
-		        </div>
-	        </nav>
-            <form class="form-inline d-flex">
-            <input id="searchText" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button type="button" id="searchButton" class="btn btn-outline-success my-2 my-sm-0">Search</button>
-          </form>
-                  <div class="d-flex flex-column align-items-between bg-dark">
-                        <div class="plotsList m-0" style="max-height:750px; overflow:auto;">
-                            <table class="table table-hover table-dark m-0">
-                              <thead>
-                                <tr style="position:sticky; top: 0; z-index: 1;">
-                                  <th scope="col">#</th>
-                                  <th scope="col">Miejscowość</th>
-                                  <th scope="col">Numer</th>
-                                  <th scope="col">Powierzchnia(ha)</th>
-                                  <th scope="col">Uprawa</th>
-                                  <th scope="col">
-                                            <a class="btn btn-secondary showFormButton px-1 py-0" onclick="showForm">Dodaj działkę</a>
-                                  </th>
-                                </tr>
-                              </thead>
-                                      <tbody class="userPlots overflow-scroll"></tbody>
-                            </table>
+                                <div class="form-group">
+                                    <label for="city" class="text-white">Miejscowość</label>
+                                    <input type="text" class="form-control" id="city" placeholder="Kraczkowa" name="City" value="@Model?.City">
+                                    <span asp-validation-for="City" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="plotNumber" class="text-white">Numer działki</label>
+                                    <input type="text" class="form-control" id="plotNumber" placeholder="3374/16" name="PlotNumber" value="@Model?.PlotNumber">
+                                    <span asp-validation-for="PlotNumber" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="area" class="text-white">Powierzchnia (ha)</label>
+                                    <input type="text" class="form-control" id="area" placeholder="0.55" name="Area" value="@Model?.Area">
+                                    <span asp-validation-for="Area" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="area" class="text-white">Uprawa</label>
+                                    <input type="text" class="form-control" id="tillage" placeholder="Pszenica" name="tillage" value="@Model?.Tillage">
+                                </div>
+                                <button type="submit" class="btn btn-primary my-2 align-self-center w-100">Dodaj działkę</button>
+                            </form>
                         </div>
+                    </div>
+                </nav>
+                <form class="form-inline d-flex">
+                    <input id="searchText" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <button type="button" id="searchButton" class="btn btn-outline-success my-2 my-sm-0">Search</button>
+                </form>
+                <div class="d-flex flex-column align-items-between bg-dark">
+                    <div class="plotsList m-0" style="max-height:750px; overflow:auto;">
+                        <table class="table table-hover table-dark m-0">
+                            <thead>
+                                <tr style="position:sticky; top: 0; z-index: 1;">
+                                    <th scope="col">#</th>
+                                    <th scope="col">Miejscowość</th>
+                                    <th scope="col">Numer</th>
+                                    <th scope="col">Powierzchnia(ha)</th>
+                                    <th scope="col">Uprawa</th>
+                                    <th scope="col">
+                                        <a class="btn btn-secondary showFormButton px-1 py-0" onclick="showForm">Dodaj działkę</a>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="userPlots overflow-scroll"></tbody>
+                        </table>
+                    </div>
                 </div>
-       </div>
+            </div>
 
-        <div class="summary bg-dark text-light p-2 m-0"></div>
+            <div class="summary bg-dark text-light p-2 m-0"></div>
 
-         @if (User?.Identity?.IsAuthenticated == false)
- {
-     <h1 class="text-light">Aby rozpocząć zarządzanie swoimi działkami <a href="/login">zaloguj</a> lub <a href="/register">zarejestruj</a> się!</h1>
- }
-</div>
-}
-<div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 h-100 m-1">
-    <div id="map"></div>
-</div>
- </section>
-   
- @if (User?.Identity?.IsAuthenticated == true)
- {
-     <script type="text/javascript">
+            @if (User?.Identity?.IsAuthenticated == false)
+            {
+                <h1 class="text-light">Aby rozpocząć zarządzanie swoimi działkami <a href="/login">zaloguj</a> lub <a href="/register">zarejestruj</a> się!</h1>
+            }
+        </div>
+    }
+    <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 h-100 m-1">
+        <div id="map"></div>
+    </div>
+</section>
+
+@if (User?.Identity?.IsAuthenticated == true)
+{
+    <script type="text/javascript">
         setTimeout(() => { getPlots(); }, 1000);
         document.querySelector(".showFormButton").addEventListener("click", showForm);
-     </script>
- }
-
-    <script>
-document.querySelector("#searchButton").addEventListener("click", (() => getPlots(document.getElementById("searchText").value)));
-document.querySelector("#searchText").addEventListener("change", (() => getPlots(document.getElementById("searchText").value)));
     </script>
+}
+
+<script>
+    document.querySelector("#searchButton").addEventListener("click", (() => getPlots(document.getElementById("searchText").value)));
+    document.querySelector("#searchText").addEventListener("change", (() => getPlots(document.getElementById("searchText").value)));
+</script>
+
+
+<style>
+    td {
+        text-align: center;
+    }
+
+    th {
+        text-align: center;
+    }
+
+    tr {
+        cursor: pointer;
+    }
+</style>

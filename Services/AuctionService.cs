@@ -5,7 +5,7 @@ namespace Services
     public class AuctionService : IAuctionService
     {
         private readonly IDbConnection _db;
-        private IMongoCollection<CategoryModel> _types;
+        private IMongoCollection<CategoryModel> _categories;
         private IMongoCollection<ItemModel> _auctions;
         private readonly UserManager<UserModel> _user;
 
@@ -15,7 +15,7 @@ namespace Services
             _db = db;
             _user = user;
             _auctions = db.AuctionCollection;
-            _types = db.TypeCollection;
+            _categories = db.CategoryCollection;
 
         }
         public PagedResult<ItemModel> GetAuctions(Query query, string userId = "")
@@ -31,7 +31,7 @@ namespace Services
             {
                 results = results.Where(r => r.Description.Contains(query.SearchPhrase, StringComparison.OrdinalIgnoreCase)
                 || r.Title.Contains(query.SearchPhrase, StringComparison.OrdinalIgnoreCase)
-                || r.Type.Name.Contains(query.SearchPhrase, StringComparison.OrdinalIgnoreCase))
+                || r.Category.Name.Contains(query.SearchPhrase, StringComparison.OrdinalIgnoreCase))
                .ToList();
             }
 
@@ -72,10 +72,10 @@ namespace Services
                 IsActive = dto.IsActive,
                 Price = dto.Price,
                 Title = dto.Title,
-                TypeId = dto.Type,
+                CategoryId = dto.CategoryId,
             };
 
-            auction.Type = (await _types.FindAsync(t => t.Id == auction.TypeId)).FirstOrDefault();
+            auction.Category = (await _categories.FindAsync(t => t.Id == auction.CategoryId)).FirstOrDefault();
 
             //using var session = await client.StartSessionAsync();
 
@@ -142,8 +142,8 @@ namespace Services
             auctionEntity.Price = dto.Price;
             auctionEntity.Description = dto.Description;
             auctionEntity.IsActive = dto.IsActive;
-            auctionEntity.TypeId = dto.Type;
-            auctionEntity.Type = (await _types.FindAsync(t => t.Id == dto.Type)).FirstOrDefault();
+            auctionEntity.CategoryId = dto.CategoryId;
+            auctionEntity.Category = (await _categories.FindAsync(t => t.Id == dto.CategoryId)).FirstOrDefault();
 
             var result = await _auctions.ReplaceOneAsync(a => a.Id == auctionId, auctionEntity);
 
@@ -154,13 +154,13 @@ namespace Services
             return false;
         }
 
-        public List<CategoryModel> GetAllTypes()
+        public List<CategoryModel> GetAllCategories()
         {
-            var results = _types.Find(_ => true);
+            var results = _categories.Find(_ => true);
             return results.ToList();
         }
 
-        public async Task<bool> CreateType(CategoryModel type)
+        public async Task<bool> CreateCategory(CategoryModel category)
         {
             var client = _db.Client;
 
@@ -171,8 +171,8 @@ namespace Services
             try
             {
                 var db = client.GetDatabase(_db.DbName);
-                var typeInTransaction = db.GetCollection<CategoryModel>(_db.TypeCollectionName);
-                await typeInTransaction.InsertOneAsync(type);
+                var categoryInTransaction = db.GetCollection<CategoryModel>(_db.CategoryCollectionName);
+                await categoryInTransaction.InsertOneAsync(category);
 
                 //await session.CommitTransactionAsync();
 
@@ -185,7 +185,7 @@ namespace Services
             }
         }
 
-        public async Task<bool> DeleteType(string typeId)
+        public async Task<bool> DeleteCategory(string categoryId)
         {
             var client = _db.Client;
 
@@ -196,8 +196,8 @@ namespace Services
             try
             {
                 var db = client.GetDatabase(_db.DbName);
-                var typeInTransaction = db.GetCollection<CategoryModel>(_db.TypeCollectionName);
-                await typeInTransaction.DeleteOneAsync(t => t.Id == typeId);
+                var categoryInTransaction = db.GetCollection<CategoryModel>(_db.CategoryCollectionName);
+                await categoryInTransaction.DeleteOneAsync(t => t.Id == categoryId);
 
                 //await session.CommitTransactionAsync();
 

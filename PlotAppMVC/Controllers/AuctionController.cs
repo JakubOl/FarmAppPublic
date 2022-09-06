@@ -58,8 +58,9 @@ namespace PlotAppMVC.Controllers
         [HttpGet("/auction/create")]
         public ActionResult Create()
         {
-            var types = _auctionService.GetAllTypes();
-            ViewData["types"] = types;
+            var categories = _auctionService.GetAllCategories();
+
+            ViewData["categories"] = categories;
             return View();
         }
 
@@ -68,8 +69,8 @@ namespace PlotAppMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(ItemDto dto)
         {
-            var types = _auctionService.GetAllTypes();
-            ViewData["types"] = types;
+            var categories = _auctionService.GetAllCategories();
+            ViewData["categories"] = categories;
 
             if (!ModelState.IsValid)
             {
@@ -100,8 +101,8 @@ namespace PlotAppMVC.Controllers
                 return Redirect("/auction");
             }
 
-            var types = _auctionService.GetAllTypes();
-            ViewData["types"] = types;
+            var categories = _auctionService.GetAllCategories();
+            ViewData["categories"] = categories;
 
             var auctionDto = _mapper.Map<ItemDto>(auction);
             return View(auctionDto);
@@ -159,53 +160,53 @@ namespace PlotAppMVC.Controllers
             return Redirect("/auction/user");
         }
 
-        [HttpGet("/auction/type")]
-        public ActionResult Types()
+        [HttpGet("/auction/category")]
+        public ActionResult Categories()
         {
-            var result = _auctionService.GetAllTypes();
-            ViewData["types"] = result;
+            var result = _auctionService.GetAllCategories();
+            ViewData["categories"] = result;
 
-            return View("Types");
+            return View("Categories");
         }
 
-        [HttpPost("/auction/type/create")]
-        public async Task<ActionResult> CreateType([FromForm] CategoryModel type)
+        [HttpPost("/auction/category/create")]
+        public async Task<ActionResult> CreateCategory([FromForm] CategoryModel category)
         {
-            var result = _auctionService.GetAllTypes();
-            ViewData["types"] = result;
+            var result = _auctionService.GetAllCategories();
+            ViewData["categories"] = result;
 
             if (!ModelState.IsValid)
             {
-                return View("Types", type);
+                return View("Categories", category);
             }
-            var newType = await _auctionService.CreateType(type);
+            var newCategory = await _auctionService.CreateCategory(category);
 
-            if (newType)
+            if (newCategory)
             {
-                TempData["Success"] = "Type created";
-                return Redirect("/auction/type");
+                TempData["Success"] = "Category created";
+                return Redirect("/auction/category");
             }
 
-            TempData["Error"] = "Type creating failed";
-            return View("Types");
+            TempData["Error"] = "Category creating failed";
+            return View("Categories");
         }
 
-        [HttpPost("/auction/type/{typeId}")]
-        public async Task<ActionResult> DeleteType([FromRoute]string typeId)
+        [HttpPost("/auction/category/{categoryId}")]
+        public async Task<ActionResult> DeleteCategory([FromRoute]string categoryId)
         {
-            var deletedType = await _auctionService.DeleteType(typeId);
+            var deletedCategory = await _auctionService.DeleteCategory(categoryId);
 
-            var result = _auctionService.GetAllTypes();
-            ViewData["types"] = result;
+            var result = _auctionService.GetAllCategories();
+            ViewData["categories"] = result;
 
-            if (deletedType)
+            if (deletedCategory)
             {
-                TempData["Success"] = "Type deleted";
-                return Redirect("/auction/type");
+                TempData["Success"] = "Category deleted";
+                return Redirect("/auction/category");
             }
 
-            TempData["Error"] = "Type deleting failed";
-            return View("Types");
+            TempData["Error"] = "Category deleting failed";
+            return View("Categories");
         }
     }
 }

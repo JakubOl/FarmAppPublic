@@ -17,8 +17,8 @@ namespace Models.Entities
 		public string Price { get; set; }
 		public string AuthorId { get; set; }
 		public bool IsActive { get; set; } = false;
-		public string TypeId { get; set; }
-		public virtual CategoryModel Type { get; set; }
+		public string CategoryId { get; set; }
+		public virtual CategoryModel Category { get; set; }
 		public List<TagModel> Comments { get; set; } = new List<TagModel>();
 		public int Likes { get; set; }
 	}

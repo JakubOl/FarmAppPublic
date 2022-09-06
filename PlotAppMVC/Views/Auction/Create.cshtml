@@ -1,7 +1,7 @@
 ﻿@model Models.Dtos.ItemDto
 
 @{
-    var types = ViewData["types"] as List<CategoryModel>;
+    var categories = ViewData["categories"] as List<CategoryModel>;
 }
 
 <section class="h-100 d-flex">
@@ -19,6 +19,7 @@
 
                                     <div class="d-flex flex-row align-items-center mb-4">
                                         <div class="form-outline flex-fill mb-0">
+                                            <label class="form-label" for="Title" asp-for="Title">Title</label>
                                             <input type="text" id="Title" class="form-control" name="Title" placeholder="Title" value="@Model?.Title" />
                                             <span asp-validation-for="Title" class="text-danger"></span>
                                         </div>
@@ -26,31 +27,39 @@
 
                                     <div class="d-flex flex-row align-items-center mb-4">
                                         <div class="form-outline flex-fill mb-0">
-                                            <input type="text" id="Description" class="form-control" name="Description" placeholder="Description" value="@Model?.Description" />
+                                            <label class="form-label" for="Description" asp-for="Description">Description</label>
+                                            <textarea class="form-control" name="Description" id="inputBody" rows="8">@Model?.Description</textarea>
                                             <span asp-validation-for="Description" class="text-danger"></span>
                                         </div>
                                     </div>
 
                                     <div class="d-flex flex-row align-items-center mb-4">
                                         <div class="form-outline flex-fill mb-0">
+                                            <label class="form-label" for="Price" asp-for="Price">Price</label>
+
                                             <input type="text" id="Price" class="form-control" name="Price" placeholder="Price" />
                                             <span asp-validation-for="Price" class="text-danger"></span>
                                         </div>
                                     </div>
 
                                     <div class="d-flex flex-row align-items-center mb-4">
-                                        <select class="form-select" id="Type" name="Type">
-                                            @if(types is not null)
-                                            {
-                                            @foreach(var type in types)
-                                        {
-                                            <option value="@type.Id">@type.Name</option>
-                                        }    
-                                            }
-                                            
-                                    </select>
+
+                                        <div class="form-outline flex-fill mb-0">
+                                            <label class="form-label" for="CategoryId" asp-for="CategoryId">Category</label>
+
+                                            <select class="form-control form-select" id="CategoryId" name="CategoryId">
+                                                @if (categories is not null)
+                                                {
+                                                    @foreach (var category in categories)
+                                                    {
+                                                        <option value="@category.Id">@category.Name</option>
+                                                    }
+                                                }
+                                            </select>
+                                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                                        </div>
                                     </div>
-                                    
+
 
                                     <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
                                         <button type="submit" class="btn btn-primary btn-lg">Create Auction</button>
