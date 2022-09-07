@@ -39,7 +39,7 @@ namespace PlotAppMVC.Controllers
             var auctions = _auctionService.GetAuctions(query, true, null);
 
             ViewData["auctions"] = auctions;
-            return View("UserAuctions");
+            return View("ManageAuctions");
         }
 
         [HttpGet("/auction/user")]
