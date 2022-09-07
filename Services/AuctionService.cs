@@ -18,18 +18,21 @@ namespace Services
             _categories = db.CategoryCollection;
 
         }
-        public PagedResult<ItemModel> GetAuctions(Query query, string userId = "")
+        public PagedResult<ItemModel> GetAuctions(Query query, bool admin = false, string userId = "")
         {
             
             var results = _auctions.Find(_ => true).ToList();
 
-            if (!string.IsNullOrWhiteSpace(userId))
+            if (!admin)
             {
-                results = results.Where(a => a.AuthorId == userId).ToList();
-            }
-            else
-            {
-                results = results.Where(a => a.IsActive == true).ToList();
+                if (!string.IsNullOrWhiteSpace(userId))
+                {
+                    results = results.Where(a => a.AuthorId == userId).ToList();
+                }
+                else
+                {
+                    results = results.Where(a => a.IsActive == true).ToList();
+                }
             }
 
             if (!string.IsNullOrWhiteSpace(query.SearchPhrase))

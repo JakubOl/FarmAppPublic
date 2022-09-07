@@ -3,13 +3,13 @@
 }
 
 <div class="m-5">
-  <form class="text-dark bg-light p-3 card" action="/users/@user.Id/delete/confirmed" method="post">
+  <form class="text-dark bg-light p-3 card" action="/admin/users/@user.Id/delete/confirmed" method="post">
     <div class="container d-flex flex-column justify-content-center align-items-center">
       <h1>Delete Account</h1>
       <p>Are you sure you want to delete user: @user.Email</p>
 
       <div class="clearfix">
-        <a href="/users" class="btn btn-primary">Cancel</a>
+        <a href="/admin/users" class="btn btn-primary">Cancel</a>
         <button type="submit" class="btn btn-danger">Delete</button>
       </div>
     </div>

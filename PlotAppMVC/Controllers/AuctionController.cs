@@ -32,12 +32,22 @@ namespace PlotAppMVC.Controllers
             return View();
         }
 
+        [HttpGet("/admin/auctions")]
+        [Authorize(Roles = "Admin, Owner")]
+        public ActionResult ManageAuctions([FromQuery] Query query)
+        {
+            var auctions = _auctionService.GetAuctions(query, true, null);
+
+            ViewData["auctions"] = auctions;
+            return View("UserAuctions");
+        }
+
         [HttpGet("/auction/user")]
         public ActionResult UserAuctions([FromQuery] Query query)
         {
             var userId = User?.Identity?.GetUserId();
 
-            var auctions = _auctionService.GetAuctions(query, userId);
+            var auctions = _auctionService.GetAuctions(query, false, userId);
 
             ViewData["auctions"] = auctions;
             return View("UserAuctions");

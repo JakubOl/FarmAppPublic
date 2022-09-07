@@ -147,7 +147,7 @@ namespace PlotAppMVC.Controllers
 
         [HttpPost("/profile/{userId}/update")]
         [Authorize]
-        public async Task<ActionResult> UpdateUser([FromForm] UserModel userModel, [FromRoute] string userId)
+        public async Task<ActionResult> Profile([FromForm] UserModel userModel, [FromRoute] string userId)
         {
             if (userId != User?.Identity?.GetUserId() && User?.IsInRole("Owner") == false)
             {
@@ -156,7 +156,7 @@ namespace PlotAppMVC.Controllers
 
             if (!ModelState.IsValid)
             {
-                return View(userModel);
+                return View("Profile",userModel);
             }
 
             var userUpdated = await _accountService.UpdateUser(userModel, userId);
@@ -172,7 +172,7 @@ namespace PlotAppMVC.Controllers
 
             ViewData["roles"] = _accountService.GetRoles();
 
-            return View(userUpdated);
+            return View("Profile", userUpdated);
         }
 
         [HttpGet("admin/users")]
@@ -193,9 +193,9 @@ namespace PlotAppMVC.Controllers
 
         [HttpGet("admin/users/{userId}/delete")]
         [Authorize(Roles = "Owner")]
-        public ActionResult ConfirmDeleteUser([FromRoute] string userId)
+        public async Task<ActionResult> ConfirmDeleteUser([FromRoute] string userId)
         {
-            var user = _accountService.GetUserById(userId);
+            var user = await _accountService.GetUserById(userId);
 
             if (user is not null)
             {
@@ -222,7 +222,7 @@ namespace PlotAppMVC.Controllers
                 TempData["Error"] = "User delete failed";
             }
 
-            return Redirect("/users");
+            return Redirect("/admin/users");
         }
 
         [HttpGet("admin/")]
