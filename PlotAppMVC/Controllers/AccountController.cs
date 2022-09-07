@@ -75,7 +75,7 @@ namespace PlotAppMVC.Controllers
             return Redirect("/login");
         }
 
-        [HttpGet("role")]
+        [HttpGet("admin/role")]
         [Authorize(Roles = "Admin,Owner")]
         public ActionResult Role()
         {
@@ -85,7 +85,7 @@ namespace PlotAppMVC.Controllers
             return View();
         }
 
-        [HttpPost("role")]
+        [HttpPost("admin/role")]
         [Authorize(Roles = "Admin,Owner")]
         public async Task<ActionResult> Role(RoleDto dto)
         {
@@ -108,7 +108,7 @@ namespace PlotAppMVC.Controllers
             return View(dto);
         }
 
-        [HttpPost("/role/{roleId}")]
+        [HttpPost("admin/role/{roleId}")]
         public async Task<ActionResult> DeleteRole([FromRoute] string roleId)
         {
             var result = await _roleService.DeleteRoleById(roleId);
@@ -175,7 +175,7 @@ namespace PlotAppMVC.Controllers
             return View(userUpdated);
         }
 
-        [HttpGet("users")]
+        [HttpGet("admin/users")]
         [Authorize(Roles = "Owner")]
         public ActionResult Users([FromQuery] Query query)
         {
@@ -191,7 +191,7 @@ namespace PlotAppMVC.Controllers
             return View();
         }
 
-        [HttpGet("users/{userId}/delete")]
+        [HttpGet("admin/users/{userId}/delete")]
         [Authorize(Roles = "Owner")]
         public ActionResult ConfirmDeleteUser([FromRoute] string userId)
         {
@@ -207,7 +207,7 @@ namespace PlotAppMVC.Controllers
             return Redirect("/users");
         }
 
-        [HttpPost("users/{userId}/delete/confirmed")]
+        [HttpPost("admin/users/{userId}/delete/confirmed")]
         [Authorize(Roles = "Owner")]
         public async Task<ActionResult> DeleteUser([FromRoute] string userId)
         {
@@ -223,6 +223,13 @@ namespace PlotAppMVC.Controllers
             }
 
             return Redirect("/users");
+        }
+
+        [HttpGet("admin/")]
+        [Authorize(Roles = "Owner")]
+        public ActionResult Admin()
+        {
+            return View();
         }
     }
 }

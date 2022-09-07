@@ -7,10 +7,20 @@
     <div class="container py-5 h-100">
         <div class="row d-flex align-items-center justify-content-center h-100">
             <div class="col-md-12 col-lg-12 col-xl-12 offset-xl-1">
+                <div>
+                    <ul class="d-flex justify-content-end gap-2">
+                        <li class="nav-item">
+                            <a class="nav-link text-light btn btn-outline-light" asp-area="" asp-controller="Auction" asp-action="Create">Create Auction</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light btn btn-outline-light" asp-area="" asp-controller="Auction" asp-action="UserAuctions">My Auctions</a>
+                        </li>
+                    </ul>
+                </div>
                 <form class="form-inline d-flex" action="/auction?pageNumber=@(result.PageNumber+1)&pageSize=@result.PageSize&searchPhrase" method="get">
-            <input id="searchText" value="@result.SearchPhrase" class="form-control mr-sm-2" type="search" name="searchPhrase" placeholder="searchPhrase" aria-label="Search">
-            <button type="submit" class="btn btn-outline-success my-2 my-sm-0">Search</button>
-          </form>
+                    <input id="searchText" value="@result.SearchPhrase" class="form-control mr-sm-2" type="search" name="searchPhrase" placeholder="searchPhrase" aria-label="Search">
+                    <button type="submit" class="btn btn-outline-success my-2 my-sm-0">Search</button>
+                </form>
                 <h1 class="text-light">Auctions: </h1>
 
                 <table class="table table-light ">
@@ -39,37 +49,48 @@
                 </table>
             </div>
             <div class="d-flex flex-column justify-content-center align-items-center">
-            <div class="mb-3 text-light">@result.ItemsFrom - @if(result.ItemsTo > result.TotalItemsCount){ @result.TotalItemsCount; }else{ @result.ItemsTo; } Total items: @result.TotalItemsCount Items</div>
-    <div class="mb-3 text-light">Page: @(result.PageNumber) </div>
-        <nav aria-label="Page navigation example">
-  <ul class="pagination">
-    <li class="page-item">
-      <a class="page-link" href="/auction?pageNumber=@(result.PageNumber-1)&pageSize=@result.PageSize&searchPhrase=@result.SearchPhrase" aria-label="Previous">
-        <span aria-hidden="true">&laquo;</span>
-        <span class="sr-only">Previous</span>
-      </a>
-    </li>
-            @for (int i = 0; i < result.TotalPages; i++)
-            {
-                <li class="page-item"><a class="page-link" href="/auction?pageNumber=@(i+1)&pageSize=@result.PageSize&searchPhrase=@result.SearchPhrase">@(i+1)</a></li>
-            } 
+                <div class="mb-3 text-light">
+                    @result.ItemsFrom - @if (result.ItemsTo > result.TotalItemsCount)
+                    {
+                        @result.TotalItemsCount
+                        ;
+                    }
+                    else
+                    {
+                        @result.ItemsTo
+                        ;
+                    } Total items: @result.TotalItemsCount Items
+                </div>
+                <div class="mb-3 text-light">Page: @(result.PageNumber) </div>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a class="page-link" href="/auction?pageNumber=@(result.PageNumber-1)&pageSize=@result.PageSize&searchPhrase=@result.SearchPhrase" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                        </li>
+                        @for (int i = 0; i < result.TotalPages; i++)
+                        {
+                            <li class="page-item"><a class="page-link" href="/auction?pageNumber=@(i+1)&pageSize=@result.PageSize&searchPhrase=@result.SearchPhrase">@(i+1)</a></li>
+                        }
 
-    <li class="page-item">
-      <a class="page-link" href="/auction?pageNumber=@(result.PageNumber+1)&pageSize=@result.PageSize&searchPhrase=@result.SearchPhrase" aria-label="Next">
-        <span aria-hidden="true">&raquo;</span>
-        <span class="sr-only">Next</span>
-      </a>
-    </li>
-  </ul>
-</nav>
-</div>
-                   </div>
-    </div> 
+                        <li class="page-item">
+                            <a class="page-link" href="/auction?pageNumber=@(result.PageNumber+1)&pageSize=@result.PageSize&searchPhrase=@result.SearchPhrase" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
 
 </section>
 
 <style>
-    tr{
+    tr {
         cursor: pointer;
     }
 </style>
