@@ -66,7 +66,6 @@ namespace PlotAppMVC.Controllers
 
         // POST: AuctionController/Create
         [HttpPost("/auction/create")]
-        [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(ItemDto dto)
         {
             var categories = _auctionService.GetAllCategories();
@@ -113,6 +112,9 @@ namespace PlotAppMVC.Controllers
         public async Task<ActionResult> Edit([FromForm] ItemDto dto, [FromRoute] string auctionId)
         {
             dto.Id = auctionId;
+
+            var categories = _auctionService.GetAllCategories();
+            ViewData["categories"] = categories;
 
             if (!ModelState.IsValid)
             {

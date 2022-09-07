@@ -20,12 +20,17 @@ namespace Services
         }
         public PagedResult<ItemModel> GetAuctions(Query query, string userId = "")
         {
+            
             var results = _auctions.Find(_ => true).ToList();
 
             if (!string.IsNullOrWhiteSpace(userId))
             {
                 results = results.Where(a => a.AuthorId == userId).ToList();
-            }   
+            }
+            else
+            {
+                results = results.Where(a => a.IsActive == true).ToList();
+            }
 
             if (!string.IsNullOrWhiteSpace(query.SearchPhrase))
             {

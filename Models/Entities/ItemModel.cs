@@ -16,7 +16,7 @@ namespace Models.Entities
 		public DateTime Created { get; set; } = DateTime.Now;
 		public string Price { get; set; }
 		public string AuthorId { get; set; }
-		public bool IsActive { get; set; } = false;
+		public bool IsActive { get; set; }
 		public string CategoryId { get; set; }
 		public virtual CategoryModel Category { get; set; }
 		public List<TagModel> Comments { get; set; } = new List<TagModel>();

@@ -18,9 +18,10 @@
                         <tr>
                             <th scope="col">Title</th>
                             <th scope="col">Category</th>
+                            <th scope="col">Added Date</th>
+                            <th scope="col">Active</th>
                             <th scope="col">Likes</th>
                             <th scope="col">Comments</th>
-                            <th scope="col">Added Date</th>
                             <th scope="col"></th>
 
                         </tr>
@@ -34,9 +35,10 @@
                                 <tr onclick="window.location='/auction/@item.Id/details';">
                                     <td>@item.Title</td>
                                     <td>@item.Category?.Name</td>
+                                    <td>@item.Created</td>
+                                    <td>@item.IsActive</td>
                                     <td>@item.Likes</td>
                                     <td>@item.Comments.Count</td>
-                                    <td>@item.Created</td>
                                     <td class="d-flex justify-content-around">
                             <a href="/auction/@item.Id/edit" class="edit" title="Edit" data-toggle="tooltip"><i class="fa fa-solid fa-edit"></i></a>
                             <a href="/auction/@item.Id/delete" class="delete" title="Delete" data-toggle="tooltip"><i class="fa fa-solid fa-trash"></i></a>
