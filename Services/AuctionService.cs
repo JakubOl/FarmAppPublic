@@ -126,7 +126,7 @@ namespace Services
             {
                 var db = client.GetDatabase(_db.DbName);
                 var auctionInTransaction = db.GetCollection<ItemModel>(_db.AuctionCollectionName);
-                await auctionInTransaction.DeleteOneAsync(a => a.Id == auctionId);
+                var deletedAuction = await auctionInTransaction.DeleteOneAsync(a => a.Id == auctionId);
 
                 var usersInTransaction = db.GetCollection<UserModel>(_db.UserCollectionName);
                 var user = await _user.FindByIdAsync(userId);

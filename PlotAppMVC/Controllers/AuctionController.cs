@@ -166,7 +166,19 @@ namespace PlotAppMVC.Controllers
         public async Task<ActionResult> Delete([FromRoute] string auctionId)
         {
             var userId = User?.Identity?.GetUserId();
+
+            var auction = _auctionService.GetAuction(auctionId);
             var deletedAuction = await _auctionService.DeleteAuction(auctionId, userId);
+
+
+
+            var imagePath = Path.Combine(_hostEnvironment.WebRootPath, "Image", auction.ImageName);
+
+            if (System.IO.File.Exists(imagePath))
+            {
+                System.IO.File.Delete(imagePath);
+            }
+
 
             if (deletedAuction)
             {
