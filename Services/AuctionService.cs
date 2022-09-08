@@ -16,7 +16,6 @@ namespace Services
             _user = user;
             _auctions = db.AuctionCollection;
             _categories = db.CategoryCollection;
-
         }
         public PagedResult<ItemModel> GetAuctions(Query query, bool admin = false, string userId = "")
         {
@@ -73,6 +72,7 @@ namespace Services
         {
             var client = _db.Client;
 
+
             var auction = new ItemModel()
             {
                 AuthorId = userId,
@@ -81,6 +81,7 @@ namespace Services
                 Price = dto.Price,
                 Title = dto.Title,
                 CategoryId = dto.CategoryId,
+                ImageName = dto.ImageName
             };
 
             auction.Category = (await _categories.FindAsync(t => t.Id == auction.CategoryId)).FirstOrDefault();

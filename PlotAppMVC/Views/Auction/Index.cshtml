@@ -24,6 +24,7 @@
                     <thead>
                         <tr>
                             <th scope="col">Title</th>
+                            <th scope="col">Image</th>
                             <th scope="col">Category</th>
                             <th scope="col">Added</th>
                         </tr>
@@ -35,8 +36,11 @@
                             @foreach (var item in result.Items)
                             {
 
-                                <tr onclick="window.location='/auction/@item.Id/details';">
+                                <tr onclick="window.location='/auction/@item.Id/details';"> 
                                     <td>@item.Title</td>
+                                    <td>
+                                    <img src="~/Image/@item?.ImageName" class="img-responsive" alt="" asp-append-version="true" width="50px" />
+                                    </td>
                                     <td>@item.Category?.Name</td>
                                     <td>@item.Created</td>
                                 </tr>
@@ -89,5 +93,8 @@
 <style>
     tr {
         cursor: pointer;
+    }
+    td,th{
+        text-align: center;
     }
 </style>

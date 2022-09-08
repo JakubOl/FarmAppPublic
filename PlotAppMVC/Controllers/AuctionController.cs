@@ -15,12 +15,16 @@ namespace PlotAppMVC.Controllers
         private readonly IAuctionService _auctionService;
         private readonly IAccountService _accountService;
         private readonly IMapper _mapper;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public AuctionController(IAuctionService auctionService, IAccountService accountService, IMapper mapper)
+        public AuctionController(IAuctionService auctionService
+            , IAccountService accountService
+            , IMapper mapper, IWebHostEnvironment hostEnvironment)
         {
             _auctionService = auctionService;
             _accountService = accountService;
             _mapper = mapper;
+            _hostEnvironment = hostEnvironment;
         }
 
         [HttpGet("/auction")]
@@ -88,9 +92,13 @@ namespace PlotAppMVC.Controllers
 
             var userId = User?.Identity?.GetUserId();
 
+            var imageName = await SaveImage(dto);
+
+            dto.ImageName = imageName;
+
             var auction = await _auctionService.CreateAuction(dto, userId);
 
-            if(auction)
+            if (auction)
             {
                 TempData["Success"] = "Auction added";
                 return Redirect("/auction/user");
@@ -219,6 +227,29 @@ namespace PlotAppMVC.Controllers
 
             TempData["Error"] = "Category deleting failed";
             return View("Categories");
+        }
+
+        public async Task<string> SaveImage(ItemDto dto)
+        {
+            try
+            {
+                string wwwRootPath = _hostEnvironment.WebRootPath;
+                string fileName = Path.GetFileNameWithoutExtension(dto.ImageFile.FileName);
+                string extension = Path.GetExtension(dto.ImageFile.FileName);
+                fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
+                string path = Path.Combine(wwwRootPath + "/Image/" + fileName);
+
+                using (var fileStream = new FileStream(path, FileMode.Create))
+                {
+                    await dto.ImageFile.CopyToAsync(fileStream);
+                }
+
+                return fileName;
+            }catch (Exception ex)
+            {
+                return "";
+            }
+            
         }
     }
 }

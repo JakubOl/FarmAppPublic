@@ -21,5 +21,7 @@ namespace Models.Entities
 		public virtual CategoryModel Category { get; set; }
 		public List<TagModel> Comments { get; set; } = new List<TagModel>();
 		public int Likes { get; set; }
+		public string ImageName { get; set; }
+
 	}
 }
