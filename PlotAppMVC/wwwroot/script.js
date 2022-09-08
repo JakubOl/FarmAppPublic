@@ -72,3 +72,4 @@ async function getPlots(searchText) {
 function showForm() {
     document.querySelector(".plotForm").classList.toggle("hidden");
 }
+

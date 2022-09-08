@@ -18,6 +18,7 @@ namespace Models.Entities
 		public DateTime CreatedDate { get; set; } = DateTime.Now;
 		public List<string> PlotsIds { get; set; } = new List<string>();
 		public List<string> Auctions { get; set; } = new List<string>();
+		public List<string> Watched { get; set; } = new List<string>();
 		public List<string> Comments { get; set; } = new List<string>();
 	}
 }

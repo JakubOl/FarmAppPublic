@@ -36,9 +36,9 @@ namespace Services
 
             if (!string.IsNullOrWhiteSpace(query.SearchPhrase))
             {
-                results = results.Where(r => r.Description.Contains(query.SearchPhrase, StringComparison.OrdinalIgnoreCase)
+                results = results.Where(r => (r.Description is not null && r.Description.Contains(query.SearchPhrase, StringComparison.OrdinalIgnoreCase))
                 || r.Title.Contains(query.SearchPhrase, StringComparison.OrdinalIgnoreCase)
-                || r.Category.Name.Contains(query.SearchPhrase, StringComparison.OrdinalIgnoreCase))
+                || r.Category.Name.Contains(query.SearchPhrase, StringComparison.OrdinalIgnoreCase))?
                .ToList();
             }
 
