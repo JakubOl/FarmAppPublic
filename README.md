@@ -44,6 +44,6 @@ To deploy this project run
 https://plotapp-aspnet.herokuapp.com
 
 ### Owner:  
-Login: owner@owner.com, Password: Onwer1!   
+Login: owner@owner.com, Password: Ownerowner1!   
 ### User:  
 Login: user@user.com, Password: Useruser1!
